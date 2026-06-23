@@ -1,0 +1,71 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+
+    /* Primary */
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+
+    /* Secondary */
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+
+    /* Destructive */
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+
+    /* Border */
+    --color-border: var(--border);
+    --color-input: var(--input);
+
+    /* Ring */
+    --color-ring: var(--ring);
+
+    /* Radius */
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+
+    /* Shadown */
+    --shadow-xs: 0px 1px 2px 0px hsl(var(--shadow-color));
+    --shadow-sm: 0px 1px 2px 0px hsl(var(--shadow-color)), 0px 1px 3px -1px hsl(var(--shadow-color));
+    --shadow-md: 0px 4px 6px -1px hsl(var(--shadow-color)), 0px 2px 4px -2px hsl(var(--shadow-color));
+    --shadow-lg: 0px 10px 15px -3px hsl(var(--shadow-color)), 0px 4px 6px -4px hsl(var(--shadow-color));
+    --shadow-xl: 0px 20px 25px -5px hsl(var(--shadow-color)), 0px 8px 10px -6px hsl(var(--shadow-color));
+}
+
+/* Dark mode */
+:where(.dark) {
+    --color-background: var(--background-dark);
+    --color-foreground: var(--foreground-dark);
+
+    /* Primary */
+    --color-primary: var(--primary-dark);
+    --color-primary-foreground: var(--primary-foreground-dark);
+
+    /* Secondary */
+    --color-secondary: var(--secondary-dark);
+    --color-secondary-foreground: var(--secondary-foreground-dark);
+
+    /* Destructive */
+    --color-destructive: var(--destructive-dark);
+    --color-destructive-foreground: var(--destructive-foreground-dark);
+
+    /* Border */
+    --color-border: var(--border-dark);
+    --color-input: var(--input-dark);
+
+    /* Ring */
+    --color-ring: var(--ring-dark);
+
+    /* Shadown */
+    --shadow-xs: 0px 1px 2px 0px hsl(var(--shadow-color-dark));
+    --shadow-sm: 0px 1px 2px 0px hsl(var(--shadow-color-dark)), 0px 1px 3px -1px hsl(var(--shadow-color-dark));
+    --shadow-md: 0px 4px 6px -1px hsl(var(--shadow-color-dark)), 0px 2px 4px -2px hsl(var(--shadow-color-dark));
+    --shadow-lg: 0px 10px 15px -3px hsl(var(--shadow-color-dark)), 0px 4px 6px -4px hsl(var(--shadow-color-dark));
+    --shadow-xl: 0px 20px 25px -5px hsl(var(--shadow-color-dark)), 0px 8px 10px -6px hsl(var(--shadow-color-dark));
+}
