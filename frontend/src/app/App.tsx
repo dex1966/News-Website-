@@ -13,6 +13,7 @@ import {
   Minus,
 } from "lucide-react";
 import LoginModal from "./LoginModal";
+import { api } from "../services/api";
 
 const VN_RED = "#e2001a";
 const VN_NAVY = "#003380";
@@ -59,23 +60,6 @@ const BREAKING = [
   "Giá vàng thế giới lên cao nhất trong vòng 3 tháng, vượt mốc 3.400 USD/ounce",
   "TP HCM: Chính phủ phê duyệt đề án xây dựng 6 tòa nhà cao tầng tại khu trung tâm",
   "Messi chính thức xác nhận không tham dự World Cup 2026 cùng Argentina",
-];
-
-const HERO_ARTICLE = {
-  title: "Ba phút 'hú vía' và vai trò cầu nối của Việt Nam tại ASEAN",
-  desc: "Bài của Phạm Quang Vinh: Việt Nam đang đóng vai trò ngày càng quan trọng trong việc thúc đẩy đoàn kết và hợp tác trong khu vực ASEAN.",
-  category: "Góc nhìn",
-  author: "Phạm Quang Vinh",
-  time: "38 phút",
-  img: IMGS.hero,
-  comments: 121,
-};
-
-const SIDE_ARTICLES = [
-  { id: 1, title: "Bộ Nội vụ: Chưa bổ sung tài sản công nghệ vào điện BHXH bắt buộc", img: IMGS.vietnam, category: "Thời sự", time: "1 giờ" },
-  { id: 2, title: "Đề xuất tăng mức phạt hành chính tối đa lên 1,5 tỷ đồng", img: IMGS.bikes, category: "Pháp luật", time: "2 giờ" },
-  { id: 3, title: "Haaland lập cú đúp, đưa Na Uy vào vòng knock-out World Cup", img: IMGS.football, category: "Thể thao", time: "3 giờ" },
-  { id: 4, title: "Chứng khoán Việt Nam bứt phá, VN-Index vượt ngưỡng 1.300 điểm", img: IMGS.stock2, category: "Kinh doanh", time: "4 giờ" },
 ];
 
 const QUICK_NEWS = [
@@ -208,11 +192,58 @@ export default function App() {
   const [reTab, setReTab] = useState("Chính sách");
   const [sportsTab, setSportsTab] = useState("Bóng đá");
   const [loginOpen, setLoginOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
+  // State cho data từ API
+  const [articles, setArticles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Gọi API lấy bài viết
+  useEffect(() => {
+    api.getArticles(20)
+      .then((data) => {
+        if (Array.isArray(data)) setArticles(data);
+      })
+      .catch(() => {
+        // Nếu API lỗi thì giữ mảng rỗng, UI sẽ dùng fallback hardcode
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  // Breaking news ticker
   useEffect(() => {
     const iv = setInterval(() => setTickerIdx((p) => (p + 1) % BREAKING.length), 4500);
     return () => clearInterval(iv);
   }, []);
+
+  // Map article từ API sang format UI
+  const heroArticle = articles.length > 0 ? {
+    title: articles[0].title,
+    desc: articles[0].summary ?? "",
+    category: articles[0].category_name ?? "",
+    author: articles[0].author ?? "Admin",
+    time: "vừa xong",
+    img: articles[0].image_url ?? IMGS.hero,
+    comments: 0,
+  } : null;
+
+  const sideArticles = articles.length > 1
+    ? articles.slice(1, 5).map((a) => ({
+      id: a.id,
+      title: a.title,
+      img: a.image_url ?? IMGS.vietnam,
+      category: a.category_name ?? "",
+      time: "vừa xong",
+    }))
+    : null;
+
+  // Search handler
+  const handleSearch = (q: string) => {
+    if (!q.trim()) return;
+    api.search(q).then((data) => {
+      if (Array.isArray(data) && data.length > 0) setArticles(data);
+    });
+  };
 
   return (
     <div className="min-h-screen text-gray-900" style={{ background: "#ffffff", fontFamily: "Noto Sans, sans-serif" }}>
@@ -249,9 +280,19 @@ export default function App() {
             </div>
           </a>
           <div className="flex-1 max-w-md hidden sm:flex items-center relative">
-            <input type="text" placeholder="Tìm kiếm tin tức, sự kiện..."
-              className="w-full pl-4 pr-10 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:border-[#e2001a] transition-colors" />
-            <Search size={15} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer hover:text-[#e2001a]" />
+            <input
+              type="text"
+              placeholder="Tìm kiếm tin tức, sự kiện..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch(searchQuery)}
+              className="w-full pl-4 pr-10 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:border-[#e2001a] transition-colors"
+            />
+            <Search
+              size={15}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer hover:text-[#e2001a]"
+              onClick={() => handleSearch(searchQuery)}
+            />
           </div>
           <div className="flex items-center gap-2 sm:hidden">
             <button onClick={() => setSearchOpen(!searchOpen)} className="p-1 text-gray-600"><Search size={20} /></button>
@@ -260,8 +301,14 @@ export default function App() {
         </div>
         {searchOpen && (
           <div className="sm:hidden px-3 pb-3">
-            <input type="text" placeholder="Tìm kiếm..."
-              className="w-full pl-4 pr-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:border-[#e2001a]" />
+            <input
+              type="text"
+              placeholder="Tìm kiếm..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch(searchQuery)}
+              className="w-full pl-4 pr-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:border-[#e2001a]"
+            />
           </div>
         )}
       </div>
@@ -271,7 +318,12 @@ export default function App() {
         <div className="max-w-[1200px] mx-auto px-3">
           <div className="hidden sm:flex items-center overflow-x-auto">
             {NAV_CATS.map((cat) => (
-              <button key={cat.id} onClick={() => setActiveNav(cat.id)}
+              <button key={cat.id} onClick={() => {
+                setActiveNav(cat.id);
+                api.getByCategory(cat.id).then((data) => {
+                  if (Array.isArray(data) && data.length > 0) setArticles(data);
+                });
+              }}
                 className={`flex-shrink-0 px-3.5 py-2.5 text-[13px] font-semibold whitespace-nowrap transition-colors ${activeNav === cat.id ? "bg-white" : "text-white hover:bg-red-700"}`}
                 style={activeNav === cat.id ? { color: VN_RED } : {}}>
                 {cat.label}
@@ -326,30 +378,51 @@ export default function App() {
 
           {/* CENTER */}
           <div className="flex-1 min-w-0">
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_296px] gap-4 mb-6">
-              <div className="group cursor-pointer">
-                <div className="relative overflow-hidden rounded">
-                  <img src={HERO_ARTICLE.img} alt={HERO_ARTICLE.title}
-                    className="w-full object-cover group-hover:scale-105 transition-transform duration-700" style={{ height: 360 }} />
-                  <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/40 to-transparent" />
-                </div>
-                <div className="mt-3">
-                  <span className="text-xs font-bold uppercase tracking-wider" style={{ color: VN_RED }}>{HERO_ARTICLE.category}</span>
-                  <h1 className="text-xl sm:text-2xl font-black text-gray-900 mt-1 leading-tight group-hover:text-[#e2001a] transition-colors" style={{ fontFamily: "Merriweather, Georgia, serif" }}>
-                    {HERO_ARTICLE.title}
-                  </h1>
-                  <p className="text-sm text-gray-600 mt-2 leading-relaxed line-clamp-3">{HERO_ARTICLE.desc}</p>
-                  <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
-                    <span className="flex items-center gap-1"><Clock size={11} /> {HERO_ARTICLE.time} trước</span>
-                    <span>{HERO_ARTICLE.comments} bình luận</span>
-                    <span className="italic">{HERO_ARTICLE.author}</span>
+
+            {/* HERO + SIDE */}
+            {loading ? (
+              <div className="h-96 flex items-center justify-center text-gray-400 text-sm">Đang tải...</div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_296px] gap-4 mb-6">
+                {/* HERO */}
+                <div className="group cursor-pointer">
+                  <div className="relative overflow-hidden rounded">
+                    <img
+                      src={heroArticle?.img ?? IMGS.hero}
+                      alt={heroArticle?.title ?? ""}
+                      className="w-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      style={{ height: 360 }}
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/40 to-transparent" />
+                  </div>
+                  <div className="mt-3">
+                    <span className="text-xs font-bold uppercase tracking-wider" style={{ color: VN_RED }}>
+                      {heroArticle?.category ?? "Góc nhìn"}
+                    </span>
+                    <h1 className="text-xl sm:text-2xl font-black text-gray-900 mt-1 leading-tight group-hover:text-[#e2001a] transition-colors" style={{ fontFamily: "Merriweather, Georgia, serif" }}>
+                      {heroArticle?.title ?? "Ba phút 'hú vía' và vai trò cầu nối của Việt Nam tại ASEAN"}
+                    </h1>
+                    <p className="text-sm text-gray-600 mt-2 leading-relaxed line-clamp-3">
+                      {heroArticle?.desc ?? "Việt Nam đang đóng vai trò ngày càng quan trọng trong việc thúc đẩy đoàn kết và hợp tác trong khu vực ASEAN."}
+                    </p>
+                    <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
+                      <span className="flex items-center gap-1"><Clock size={11} /> {heroArticle?.time ?? "38 phút"} trước</span>
+                      <span className="italic">{heroArticle?.author ?? "Admin"}</span>
+                    </div>
                   </div>
                 </div>
+
+                {/* SIDE ARTICLES */}
+                <div className="bg-white rounded border border-gray-200 divide-y divide-gray-100 px-3">
+                  {(sideArticles ?? [
+                    { id: 1, title: "Bộ Nội vụ: Chưa bổ sung tài sản công nghệ vào điện BHXH bắt buộc", img: IMGS.vietnam, category: "Thời sự", time: "1 giờ" },
+                    { id: 2, title: "Đề xuất tăng mức phạt hành chính tối đa lên 1,5 tỷ đồng", img: IMGS.bikes, category: "Pháp luật", time: "2 giờ" },
+                    { id: 3, title: "Haaland lập cú đúp, đưa Na Uy vào vòng knock-out World Cup", img: IMGS.football, category: "Thể thao", time: "3 giờ" },
+                    { id: 4, title: "Chứng khoán Việt Nam bứt phá, VN-Index vượt ngưỡng 1.300 điểm", img: IMGS.stock2, category: "Kinh doanh", time: "4 giờ" },
+                  ]).map((a) => <ArticleCard key={a.id} article={a} horizontal />)}
+                </div>
               </div>
-              <div className="bg-white rounded border border-gray-200 divide-y divide-gray-100 px-3">
-                {SIDE_ARTICLES.map((a) => <ArticleCard key={a.id} article={a} horizontal />)}
-              </div>
-            </div>
+            )}
 
             {/* TIN NHANH */}
             <div className="bg-white rounded border border-gray-200 mb-6 overflow-hidden">
@@ -416,11 +489,13 @@ export default function App() {
                 <h3 className="text-white font-black text-xs uppercase tracking-wider">Đọc nhiều nhất</h3>
               </div>
               <div>
-                {MOST_READ.map((item) => (
-                  <div key={item.rank} className="flex items-start gap-2.5 px-3 py-2.5 hover:bg-gray-50 cursor-pointer group border-b border-gray-100 last:border-0">
-                    <span className={`text-xl font-black flex-shrink-0 leading-none mt-0.5 ${item.rank <= 3 ? "" : "text-gray-200"}`}
-                      style={item.rank <= 3 ? { color: VN_RED } : {}}>{item.rank}</span>
-                    <p className="text-xs text-gray-700 leading-snug group-hover:text-[#e2001a] transition-colors line-clamp-3">{item.title}</p>
+                {(articles.length > 0 ? articles.slice(0, 10) : MOST_READ).map((item: any, idx: number) => (
+                  <div key={item.id ?? item.rank} className="flex items-start gap-2.5 px-3 py-2.5 hover:bg-gray-50 cursor-pointer group border-b border-gray-100 last:border-0">
+                    <span className={`text-xl font-black flex-shrink-0 leading-none mt-0.5 ${idx + 1 <= 3 ? "" : "text-gray-200"}`}
+                      style={idx + 1 <= 3 ? { color: VN_RED } : {}}>{idx + 1}</span>
+                    <p className="text-xs text-gray-700 leading-snug group-hover:text-[#e2001a] transition-colors line-clamp-3">
+                      {item.title}
+                    </p>
                   </div>
                 ))}
               </div>
