@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng nhập Quản trị | Tin Tức</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin_styles.css">
+</head>
+<body>
+  <div class="site-shell">
+    <header class="top-strip" aria-label="Thông tin liên hệ">
+      <div class="top-strip__inner">
+        <span>0914.914.999</span>
+        <span>Email: thuky@baotintuc.vn</span>
+        <span>Rss</span>
+        <span>Fanpage</span>
+        <form class="quick-search" action="#" role="search">
+          <label for="site-search" class="sr-only">Từ khóa tìm kiếm</label>
+          <input id="site-search" type="search" placeholder="Từ khóa tìm kiếm">
+          <button type="submit" aria-label="Tìm kiếm">
+            <i data-lucide="search" aria-hidden="true"></i>
+          </button>
+        </form>
+      </div>
+    </header>
+
+    <section class="brand-band" aria-label="Thương hiệu">
+      <div class="brand-band__inner">
+        <a class="brand-mark" href="#" aria-label="Tin tức">
+          <span class="brand-mark__name">tin tức</span>
+          <span class="brand-mark__agency">Thông tấn xã Việt Nam</span>
+        </a>
+
+        <div class="ad-line" aria-hidden="true">
+          <span>Chuyên trang quản trị nội dung</span>
+          <strong>Tòa soạn điện tử</strong>
+        </div>
+      </div>
+    </section>
+
+    <nav class="main-nav" aria-label="Chuyên mục">
+      <div class="main-nav__inner">
+        <a href="#" aria-label="Trang chủ"><i data-lucide="house" aria-hidden="true"></i></a>
+        <a href="#">Thời sự</a>
+        <a href="#">Thế giới</a>
+        <a href="#">Kinh tế</a>
+        <a href="#">Xã hội</a>
+        <a href="#">Pháp luật</a>
+        <a href="#">Văn hóa</a>
+        <a href="#">Giáo dục</a>
+        <a href="#">Video</a>
+      </div>
+    </nav>
+
+    <main class="login-page">
+      <section class="event-strip" aria-label="Dòng sự kiện">
+        <strong>Sự kiện</strong>
+        <span>Hội chợ Mùa Xuân 2026</span>
+        <span>Triển khai Nghị quyết Đại hội XIV</span>
+        <time id="current-time" datetime="2026-06-26T19:56">Thứ 6, 26/6/2026 | 19:56:41</time>
+      </section>
+
+      <section class="login-layout" aria-label="Đăng nhập hệ thống">
+        <article class="news-preview">
+          <div class="preview-frame">
+            <img src="assets/bao-tin-tuc-home-cropped.png" alt="Giao diện trang chủ báo Tin tức">
+          </div>
+
+          <div class="desk-note">
+            <span class="desk-note__label">Ban biên tập</span>
+            <h1>Quản trị tin bài và lịch xuất bản</h1>
+            <p>Không gian đăng nhập dành cho phóng viên, biên tập viên và quản trị viên nội dung.</p>
+          </div>
+        </article>
+
+        <section class="login-card" aria-labelledby="login-title">
+          <div class="login-card__masthead">
+            <span class="section-kicker">CMS Admin</span>
+            <h2 id="login-title">Đăng nhập</h2>
+            <p>Vui lòng sử dụng tài khoản được cấp bởi tòa soạn.</p>
+          </div>
+
+          <form id="login-form" class="login-form" action="#" method="post" novalidate>
+            <div class="field-group">
+              <label for="username">Tài khoản</label>
+              <div class="input-shell">
+                <i data-lucide="user-round" aria-hidden="true"></i>
+                <input id="username" name="username" type="text" autocomplete="username" placeholder="email hoặc mã nhân sự" required>
+              </div>
+              <small class="field-error" id="username-error"></small>
+            </div>
+
+            <div class="field-group">
+              <label for="password">Mật khẩu</label>
+              <div class="input-shell">
+                <i data-lucide="lock-keyhole" aria-hidden="true"></i>
+                <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Nhập mật khẩu" minlength="6" required>
+                <button class="icon-button password-toggle" type="button" aria-label="Hiện mật khẩu" aria-pressed="false">
+                  <i data-lucide="eye" aria-hidden="true"></i>
+                </button>
+              </div>
+              <small class="field-error" id="password-error"></small>
+            </div>
+
+            <div class="form-row">
+              <label class="remember-option">
+                <input id="remember" name="remember" type="checkbox">
+                <span>Ghi nhớ đăng nhập</span>
+              </label>
+              <a href="#" class="forgot-link">Quên mật khẩu?</a>
+            </div>
+
+            <button class="submit-button" type="submit" id="btn-login">
+              <span>Đăng nhập hệ thống</span>
+              <i data-lucide="arrow-right" aria-hidden="true"></i>
+            </button>
+
+            <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
+          </form>
+
+          <div class="support-line">
+            <i data-lucide="shield-check" aria-hidden="true"></i>
+            <span>Hỗ trợ kỹ thuật: ext. 102 hoặc admin@toasoan.vn</span>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <script src="admin_script.js"></script>
+</body>
+</html>
