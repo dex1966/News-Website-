@@ -1,7 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: http://localhost:5173");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
+require_once '../config/cors.php';
 header("Content-Type: application/json; charset=utf-8");
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -15,6 +13,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 $id = $_GET['id'] ?? null;
 $category = $_GET['category'] ?? null;
 $search = $_GET['search'] ?? null;
+$source = $_GET['source'] ?? null;
 $limit = (int)($_GET['limit'] ?? 20);
 
 try {
@@ -87,7 +86,7 @@ try {
             $data['content'] ?? '',
             $data['image_url'] ?? '',
             $data['category_id'],
-            $data['author'] ?? 'Admin',
+            $data['author'] ?? 'Admin'
         ]);
         echo json_encode(['id' => $pdo->lastInsertId(), 'message' => 'Tạo bài viết thành công']);
     }
@@ -112,7 +111,7 @@ try {
     elseif ($method === 'DELETE') {
         $stmt = $pdo->prepare("DELETE FROM articles WHERE id = ?");
         $stmt->execute([$id]);
-        echo json_encode(['message' => 'Xoá thành công']);
+        echo json_encode(['success' => true, 'message' => 'Xoá thành công']);
     }
 
 } catch (Exception $e) {

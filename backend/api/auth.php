@@ -1,7 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: http://localhost:5173");
-header("Access-Control-Allow-Methods: POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
+require_once '../config/cors.php';
 header("Content-Type: application/json; charset=utf-8");
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -31,17 +29,56 @@ try {
         echo json_encode(['message' => 'Đăng ký thành công']);
 
     } elseif ($action === 'login') {
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+        $stmt = $pdo->prepare("SELECT id, name, email, role, phone, address, hometown, gender FROM users WHERE email = ?");
         $stmt->execute([$data['email']]);
         $user = $stmt->fetch();
 
-        if (!$user || !password_verify($data['password'], $user['password'])) {
+        // Verify password separately
+        $stmtPwd = $pdo->prepare("SELECT password FROM users WHERE email = ?");
+        $stmtPwd->execute([$data['email']]);
+        $row = $stmtPwd->fetch();
+
+        if (!$user || !$row || !password_verify($data['password'], $row['password'])) {
             http_response_code(401);
             echo json_encode(['error' => 'Email hoặc mật khẩu không đúng']);
             exit;
         }
-        unset($user['password']);
         echo json_encode(['message' => 'Đăng nhập thành công', 'user' => $user]);
+
+    } elseif ($action === 'update_profile') {
+        $id       = $data['id']       ?? null;
+        $name     = $data['name']     ?? null;
+        $password = $data['password'] ?? null;
+        $phone    = $data['phone']    ?? null;
+        $address  = $data['address']  ?? null;
+        $hometown = $data['hometown'] ?? null;
+        $gender   = $data['gender']   ?? null;
+
+        if (!$id || !$name) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Thiếu thông tin']);
+            exit;
+        }
+
+        // Validate gender value
+        if ($gender && !in_array($gender, ['male', 'female', 'other'])) {
+            $gender = null;
+        }
+
+        if ($password) {
+            $hash = password_hash($password, PASSWORD_DEFAULT);
+            $stmt = $pdo->prepare("UPDATE users SET name=?, password=?, phone=?, address=?, hometown=?, gender=? WHERE id=?");
+            $stmt->execute([$name, $hash, $phone, $address, $hometown, $gender, $id]);
+        } else {
+            $stmt = $pdo->prepare("UPDATE users SET name=?, phone=?, address=?, hometown=?, gender=? WHERE id=?");
+            $stmt->execute([$name, $phone, $address, $hometown, $gender, $id]);
+        }
+        
+        $stmt = $pdo->prepare("SELECT id, name, email, role, phone, address, hometown, gender FROM users WHERE id = ?");
+        $stmt->execute([$id]);
+        $user = $stmt->fetch();
+        
+        echo json_encode(['message' => 'Cập nhật thành công', 'user' => $user]);
     }
 
 } catch (Exception $e) {
