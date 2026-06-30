@@ -173,9 +173,58 @@
     line-height: 1.5;
   }
 
+
   input {
     font-size: var(--text-base);
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
   }
 }
+
+/* Thin scrollbar for "Đọc nhiều nhất" sidebar */
+.most-read-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}
+
+.most-read-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.most-read-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.most-read-scroll::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 999px;
+}
+
+.most-read-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: #e2001a;
+}
+
+/* Thin scrollbar for side articles panel */
+.side-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}
+
+.side-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.side-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.side-scroll::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 999px;
+}
+
+.side-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: #e2001a;
+}
+
+

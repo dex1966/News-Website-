@@ -16,7 +16,10 @@ export default function Sidebar({ mostRead }: { mostRead: any[] }) {
         <div className="px-3 py-2" style={{ background: VN_RED }}>
           <h3 className="text-white font-black text-xs uppercase tracking-wider">Đọc nhiều nhất</h3>
         </div>
-        <div>
+        <div
+          style={{ maxHeight: 400, overflowY: "auto" }}
+          className="most-read-scroll"
+        >
           {mostRead.map((item) => (
             <div key={item.rank} onClick={() => item.id && navigate(`/article/${item.id}`)} className="flex items-start gap-2.5 px-3 py-2.5 hover:bg-gray-50 cursor-pointer group border-b border-gray-100 last:border-0">
               <span className={`text-xl font-black flex-shrink-0 leading-none mt-0.5 ${item.rank <= 3 ? "" : "text-gray-200"}`}

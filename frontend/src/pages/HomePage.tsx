@@ -19,10 +19,11 @@ type HomePageProps = {
   currentUser: any;
   handleDeleteArticle: (id: number, e: React.MouseEvent) => void;
   activeNav: string;
+  currentSearchQuery?: string;
 };
 
 export default function HomePage({
-  loading, articles, displayedArticles, viewMode, currentUser, handleDeleteArticle, activeNav
+  loading, articles, displayedArticles, viewMode, currentUser, handleDeleteArticle, activeNav, currentSearchQuery = ""
 }: HomePageProps) {
   const navigate = useNavigate();
   const [reTab, setReTab] = useState("Kinh doanh");
@@ -101,17 +102,74 @@ export default function HomePage({
   }, [activeNav, limit, loadingMore, hasMore]);
 
   const heroArticle = articles.length > 0 ? articles[0] : null;
-  const sideArticles = articles.length > 1 ? articles.slice(1, 5) : [];
+  const sideArticles = articles.length > 1 ? articles.slice(1, 9) : [];
   
   const mostRead = displayedArticles.length > 0
-    ? displayedArticles.slice(0, 10).map((a, i) => ({ rank: i + 1, title: a.title, id: a.id }))
+    ? displayedArticles.slice(0, 20).map((a, i) => ({ rank: i + 1, title: a.title, id: a.id }))
     : [
       { rank: 1, title: "Ba phút 'hú vía' và vai trò cầu nối của Việt Nam tại ASEAN" },
       { rank: 2, title: "Haaland lập cú đúp, đưa Na Uy vào vòng knock-out World Cup" },
       { rank: 3, title: "Chứng khoán Việt Nam bứt phá, VN-Index vượt ngưỡng 1.300 điểm" },
       { rank: 4, title: "Giá vàng thế giới lên cao nhất trong vòng 3 tháng qua" },
       { rank: 5, title: "AI tạo sinh đang định hình lại tương lai ngành giáo dục" },
+      { rank: 6, title: "Thủ tướng chủ trì phiên họp kinh tế - xã hội tháng 6" },
+      { rank: 7, title: "Việt Nam và Nhật Bản ký kết thỏa thuận hợp tác 5 tỷ USD" },
+      { rank: 8, title: "TP HCM phê duyệt đề án xây dựng 6 tòa nhà cao tầng trung tâm" },
+      { rank: 9, title: "Chỉ số tiêu dùng CPI tháng 6 tăng nhẹ 0,15% so với tháng trước" },
+      { rank: 10, title: "Xuất khẩu Việt Nam đạt kỷ lục mới trong nửa đầu năm 2026" },
     ];
+
+  // Render Search Results View
+  if (currentSearchQuery) {
+    return (
+      <div className="max-w-[1200px] mx-auto px-3 py-4">
+        <div className="flex gap-4">
+          {/* Left Ads Column */}
+          <div className="hidden xl:block w-[160px] flex-shrink-0">
+            <div className="sticky top-16">
+              <div className="rounded flex flex-col items-center justify-center gap-2 bg-gradient-to-b from-gray-100 to-gray-200 border border-gray-200" style={{ width: 160, height: 600 }}>
+                <span className="text-[10px] text-gray-400 uppercase tracking-widest rotate-90 whitespace-nowrap">Quảng cáo</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Main Content Column */}
+          <div className="flex-1 min-w-0">
+            <div className="border-b-2 pb-2 mb-6" style={{ borderColor: VN_RED }}>
+              <h2 className="text-xl font-bold uppercase tracking-wider" style={{ color: VN_RED }}>
+                Kết quả tìm kiếm cho: "{currentSearchQuery}"
+              </h2>
+            </div>
+            
+            {loading ? (
+              <div className="h-64 flex items-center justify-center">
+                <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: VN_RED, borderTopColor: "transparent" }} />
+              </div>
+            ) : articles.length === 0 ? (
+              <div className="py-12 text-center text-gray-400">Không tìm thấy bài viết nào phù hợp với từ khóa của bạn.</div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {articles.map((article) => (
+                  <div key={article.id} className="bg-white p-3 rounded border border-gray-200 hover:shadow-md transition-shadow">
+                    <ArticleCard
+                      article={article}
+                      onClick={() => navigate(`/article/${article.id}`)}
+                      onDelete={currentUser?.role === 'admin' ? (e) => handleDeleteArticle(article.id, e) : undefined}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          
+          {/* Right Sidebar Column */}
+          <div className="hidden lg:block w-[296px] flex-shrink-0">
+            <Sidebar mostRead={mostRead} />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Render Category Page View
   if (activeNav) {
@@ -232,7 +290,10 @@ export default function HomePage({
               )}
 
               {/* SIDE */}
-              <div className="bg-white rounded border border-gray-200 divide-y divide-gray-100 px-3">
+              <div
+                className="bg-white rounded border border-gray-200 divide-y divide-gray-100 px-3 side-scroll"
+                style={{ maxHeight: 420, overflowY: "auto" }}
+              >
                 {sideArticles.map((a) => (
                   <div key={a.id} className="cursor-pointer" onClick={() => a.id && navigate(`/article/${a.id}`)}>
                     <ArticleCard

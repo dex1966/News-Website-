@@ -17,8 +17,9 @@ export default function App() {
   const [loginOpen, setLoginOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
 
-  // Đọc category từ URL khi trang load (để back button hoạt động đúng)
+  // Đọc category và search query từ URL
   const catFromUrl = searchParams.get("cat") || "";
+  const qFromUrl = searchParams.get("q") || "";
   const [activeNav, setActiveNav] = useState(catFromUrl);
 
   useEffect(() => {
@@ -28,14 +29,25 @@ export default function App() {
     }
   }, []);
 
-  // Load articles khi category URL thay đổi
+  // Đồng bộ ô tìm kiếm với URL
+  useEffect(() => {
+    setSearchQuery(qFromUrl);
+  }, [qFromUrl]);
+
+  // Load articles khi category hoặc search query thay đổi
   useEffect(() => {
     const cat = searchParams.get("cat") || "";
+    const q = searchParams.get("q") || "";
     setActiveNav(cat);
     setLoading(true);
 
     if (viewMode === 'home') {
-      if (cat) {
+      if (q) {
+        api.searchArticles(q)
+          .then((data) => { if (Array.isArray(data)) setArticles(data); })
+          .catch(() => { })
+          .finally(() => setLoading(false));
+      } else if (cat) {
         api.getArticlesByCategory(cat, 20)
           .then((data) => { if (Array.isArray(data)) setArticles(data); })
           .catch(() => { })
@@ -89,11 +101,11 @@ export default function App() {
   };
 
   const handleSearch = () => {
-    if (!searchQuery.trim()) return;
-    setLoading(true);
-    api.searchArticles(searchQuery)
-      .then(data => { if (Array.isArray(data)) setArticles(data); })
-      .finally(() => setLoading(false));
+    if (!searchQuery.trim()) {
+      setSearchParams({});
+    } else {
+      setSearchParams({ q: searchQuery });
+    }
   };
 
   // Khi click nav → đổi URL param, lịch sử trình duyệt sẽ ghi nhận
@@ -138,6 +150,7 @@ export default function App() {
         currentUser={currentUser}
         handleDeleteArticle={handleDeleteArticle}
         activeNav={activeNav}
+        currentSearchQuery={searchParams.get("q") || ""}
       />
 
       <Footer />
