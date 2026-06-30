@@ -171,6 +171,39 @@ export default function HomePage({
     );
   }
 
+  // Render Video Page View (special case)
+  if (activeNav === "video") {
+    return (
+      <div className="max-w-[1200px] mx-auto px-3 py-4">
+        <div className="flex gap-4">
+          {/* Left Ads Column */}
+          <div className="hidden xl:block w-[160px] flex-shrink-0">
+            <div className="sticky top-16">
+              <div className="rounded flex flex-col items-center justify-center gap-2 bg-gradient-to-b from-gray-100 to-gray-200 border border-gray-200" style={{ width: 160, height: 600 }}>
+                <span className="text-[10px] text-gray-400 uppercase tracking-widest rotate-90 whitespace-nowrap">Quảng cáo</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content Column */}
+          <div className="flex-1 min-w-0">
+            <div className="border-b-2 pb-2 mb-6" style={{ borderColor: VN_RED }}>
+              <h2 className="text-xl font-bold uppercase tracking-wider" style={{ color: VN_RED }}>
+                VIDEO
+              </h2>
+            </div>
+            <VideoSection />
+          </div>
+
+          {/* Right Sidebar Column */}
+          <div className="hidden lg:block w-[296px] flex-shrink-0">
+            <Sidebar mostRead={mostRead} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Render Category Page View
   if (activeNav) {
     const categoryName = NAV_CATS.find(c => c.id === activeNav)?.label || activeNav;
