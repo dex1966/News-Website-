@@ -6,6 +6,8 @@ import SectionHeader from "../components/SectionHeader";
 import Sidebar from "../components/Sidebar";
 import { api } from "../services/api";
 import VideoSection from "../components/VideoSection";
+import { formatRelativeTime } from "../utils/date";
+import { NAV_CATS } from "../data/mockData";
 
 const VN_RED = "#e2001a";
 
@@ -16,10 +18,11 @@ type HomePageProps = {
   viewMode: string;
   currentUser: any;
   handleDeleteArticle: (id: number, e: React.MouseEvent) => void;
+  activeNav: string;
 };
 
 export default function HomePage({
-  loading, articles, displayedArticles, viewMode, currentUser, handleDeleteArticle
+  loading, articles, displayedArticles, viewMode, currentUser, handleDeleteArticle, activeNav
 }: HomePageProps) {
   const navigate = useNavigate();
   const [reTab, setReTab] = useState("Kinh doanh");
@@ -28,6 +31,12 @@ export default function HomePage({
   const [reNews, setReNews] = useState<any[]>([]);
   const [sportsNews, setSportsNews] = useState<any[]>([]);
   const [techNews, setTechNews] = useState<any[]>([]);
+
+  // Category view states
+  const [catArticles, setCatArticles] = useState<any[]>([]);
+  const [limit, setLimit] = useState(12);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
     api.getArticlesByCategory("kinhdoanh").then(data => {
@@ -40,6 +49,56 @@ export default function HomePage({
       if (!data.error) setTechNews(data.slice(0, 4));
     });
   }, []);
+
+  // Fetch category articles when activeNav changes
+  useEffect(() => {
+    if (!activeNav) {
+      setCatArticles([]);
+      return;
+    }
+
+    setLimit(12);
+    setHasMore(true);
+    setLoadingMore(true);
+
+    api.getArticlesByCategory(activeNav, 12).then(data => {
+      if (!data.error && Array.isArray(data)) {
+        setCatArticles(data);
+        if (data.length < 12) {
+          setHasMore(false);
+        }
+      }
+      setLoadingMore(false);
+    });
+  }, [activeNav]);
+
+  const loadMore = () => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    const newLimit = limit + 12;
+    setLimit(newLimit);
+    api.getArticlesByCategory(activeNav, newLimit).then(data => {
+      if (!data.error && Array.isArray(data)) {
+        setCatArticles(data);
+        if (data.length < newLimit) {
+          setHasMore(false);
+        }
+      }
+      setLoadingMore(false);
+    });
+  };
+
+  // Infinite Scroll Listener
+  useEffect(() => {
+    if (!activeNav) return;
+    const handleScroll = () => {
+      if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 150) {
+        loadMore();
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [activeNav, limit, loadingMore, hasMore]);
 
   const heroArticle = articles.length > 0 ? articles[0] : null;
   const sideArticles = articles.length > 1 ? articles.slice(1, 5) : [];
@@ -54,6 +113,72 @@ export default function HomePage({
       { rank: 5, title: "AI tạo sinh đang định hình lại tương lai ngành giáo dục" },
     ];
 
+  // Render Category Page View
+  if (activeNav) {
+    const categoryName = NAV_CATS.find(c => c.id === activeNav)?.label || activeNav;
+    return (
+      <div className="max-w-[1200px] mx-auto px-3 py-4">
+        <div className="flex gap-4">
+          {/* Left Ads Column */}
+          <div className="hidden xl:block w-[160px] flex-shrink-0">
+            <div className="sticky top-16">
+              <div className="rounded flex flex-col items-center justify-center gap-2 bg-gradient-to-b from-gray-100 to-gray-200 border border-gray-200" style={{ width: 160, height: 600 }}>
+                <span className="text-[10px] text-gray-400 uppercase tracking-widest rotate-90 whitespace-nowrap">Quảng cáo</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Main Content Column */}
+          <div className="flex-1 min-w-0">
+            <div className="border-b-2 pb-2 mb-6" style={{ borderColor: VN_RED }}>
+              <h2 className="text-xl font-bold uppercase tracking-wider" style={{ color: VN_RED }}>
+                {categoryName}
+              </h2>
+            </div>
+            
+            {loading && catArticles.length === 0 ? (
+              <div className="h-64 flex items-center justify-center">
+                <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: VN_RED, borderTopColor: "transparent" }} />
+              </div>
+            ) : catArticles.length === 0 ? (
+              <div className="py-12 text-center text-gray-400">Không có bài viết nào trong chủ đề này.</div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {catArticles.map((article) => (
+                  <div key={article.id} className="bg-white p-3 rounded border border-gray-200 hover:shadow-md transition-shadow">
+                    <ArticleCard
+                      article={article}
+                      onClick={() => navigate(`/article/${article.id}`)}
+                      onDelete={currentUser?.role === 'admin' ? (e) => handleDeleteArticle(article.id, e) : undefined}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            {hasMore && (
+              <div className="mt-8 text-center">
+                <button
+                  onClick={loadMore}
+                  disabled={loadingMore}
+                  className="px-6 py-2 border border-gray-300 text-sm font-semibold rounded hover:bg-gray-50 transition-colors disabled:opacity-50 cursor-pointer"
+                >
+                  {loadingMore ? "Đang tải thêm..." : "Xem thêm"}
+                </button>
+              </div>
+            )}
+          </div>
+          
+          {/* Right Sidebar Column */}
+          <div className="hidden lg:block w-[296px] flex-shrink-0">
+            <Sidebar mostRead={mostRead} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Render Home Dashboard View
   return (
     <div className="max-w-[1200px] mx-auto px-3 py-4">
       <div className="flex gap-4">
@@ -90,7 +215,7 @@ export default function HomePage({
                     </h1>
                     <p className="text-sm text-gray-600 mt-2 leading-relaxed line-clamp-3">{heroArticle.summary || heroArticle.desc}</p>
                     <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
-                      <span className="flex items-center gap-1"><Clock size={11} /> {heroArticle.time || "vừa xong"}</span>
+                      <span className="flex items-center gap-1"><Clock size={11} /> {formatRelativeTime(heroArticle.created_at || heroArticle.time)}</span>
                       <span className="italic">{heroArticle.author}</span>
                       {currentUser?.role === 'admin' && (
                         <button
@@ -121,8 +246,6 @@ export default function HomePage({
             </div>
           )}
 
-
-
           <VideoSection />
 
           <div className="bg-white rounded border border-gray-200 p-4 mb-6">
@@ -139,7 +262,7 @@ export default function HomePage({
                         <h3 className="text-base font-bold text-gray-800 leading-tight group-hover:text-[#e2001a] transition-colors" style={{ fontFamily: "Merriweather, Georgia, serif" }}>{reNews[0].title}</h3>
                         <p className="text-xs text-gray-500 mt-1.5 leading-relaxed line-clamp-3">{reNews[0].summary || reNews[0].desc}</p>
                         <div className="flex items-center gap-3 mt-2 text-[11px] text-gray-400">
-                          <span className="flex items-center gap-1"><Clock size={10} /> {reNews[0].time || "vừa xong"}</span>
+                          <span className="flex items-center gap-1"><Clock size={10} /> {formatRelativeTime(reNews[0].created_at || reNews[0].time)}</span>
                           <span className="flex items-center gap-1"><Eye size={10} /> {reNews[0].views || 0}</span>
                         </div>
                       </div>

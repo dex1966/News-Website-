@@ -91,13 +91,13 @@ export default function Header({
       {/* Main Logo & Search */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-[1200px] mx-auto px-3 py-3 flex items-center gap-4 justify-between">
-          <a href="#" className="flex-shrink-0 flex items-start gap-1">
+          <div onClick={() => handleNavClick("")} className="cursor-pointer flex-shrink-0 flex items-start gap-1">
             <span className="text-[32px] font-black text-[#e2001a] leading-none" style={{ fontFamily: "Merriweather, Georgia, serif" }}>VN</span>
             <div className="flex flex-col leading-none mt-0.5">
               <span className="text-[19px] font-black tracking-[0.15em] leading-tight" style={{ color: VN_NAVY, fontFamily: "Merriweather, Georgia, serif" }}>EXPRESS</span>
               <span className="text-[9px] text-gray-400 tracking-wide mt-0.5">Báo tiếng Việt nhiều người đọc nhất</span>
             </div>
-          </a>
+          </div>
           <div className="flex-1 max-w-md hidden sm:flex items-center relative">
             <input type="text" placeholder="Tìm kiếm tin tức, sự kiện..."
               value={searchQuery}
@@ -126,6 +126,10 @@ export default function Header({
       <nav className="sticky top-0 z-50 shadow-md" style={{ background: VN_RED }}>
         <div className="max-w-[1200px] mx-auto px-3">
           <div className="hidden sm:flex items-center overflow-x-auto">
+            <button onClick={() => handleNavClick("")}
+              className={`flex-shrink-0 px-3.5 py-2.5 text-[13px] font-semibold whitespace-nowrap transition-colors ${!activeNav ? "bg-white text-[#e2001a]" : "text-white hover:bg-red-700"}`}>
+              Trang chủ
+            </button>
             {NAV_CATS.map((cat) => (
               <button key={cat.id} onClick={() => handleNavClick(cat.id)}
                 className={`flex-shrink-0 px-3.5 py-2.5 text-[13px] font-semibold whitespace-nowrap transition-colors ${activeNav === cat.id ? "bg-white" : "text-white hover:bg-red-700"}`}
@@ -135,13 +139,17 @@ export default function Header({
             ))}
           </div>
           <div className="sm:hidden flex items-center justify-between py-2.5">
-            <span className="text-white font-semibold text-sm">{NAV_CATS.find((c) => c.id === activeNav)?.label}</span>
+            <span className="text-white font-semibold text-sm">{NAV_CATS.find((c) => c.id === activeNav)?.label || "Trang chủ"}</span>
             <button onClick={() => setMobileOpen(!mobileOpen)} className="text-white flex items-center gap-1 text-xs">
               Danh mục <ChevronDown size={14} />
             </button>
           </div>
           {mobileOpen && (
             <div className="sm:hidden grid grid-cols-3 gap-1 pb-3">
+              <button onClick={() => { handleNavClick(""); setMobileOpen(false); }}
+                className={`px-2 py-1.5 text-xs font-medium rounded transition-colors text-center ${!activeNav ? "bg-white text-[#e2001a]" : "text-white hover:bg-red-700"}`}>
+                Trang chủ
+              </button>
               {NAV_CATS.map((cat) => (
                 <button key={cat.id} onClick={() => { handleNavClick(cat.id); setMobileOpen(false); }}
                   className={`px-2 py-1.5 text-xs font-medium rounded transition-colors text-center ${activeNav === cat.id ? "bg-white" : "text-white hover:bg-red-700"}`}

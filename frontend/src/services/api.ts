@@ -7,11 +7,8 @@ export const api = {
     getArticle: (id: number) =>
         fetch(`${BASE_URL}/articles.php?id=${id}`).then(r => r.json()),
 
-    getByCategory: (slug: string) =>
-        fetch(`${BASE_URL}/articles.php?category=${slug}`).then(r => r.json()),
-
-    getArticlesByCategory: (slug: string) =>
-        fetch(`${BASE_URL}/articles.php?category=${slug}`).then(r => r.json()),
+    getArticlesByCategory: (slug: string, limit = 20) =>
+        fetch(`${BASE_URL}/articles.php?category=${slug}&limit=${limit}`).then(r => r.json()),
 
     search: (q: string) =>
         fetch(`${BASE_URL}/articles.php?search=${encodeURIComponent(q)}`).then(r => r.json()),

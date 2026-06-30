@@ -18,7 +18,7 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState<any>(null);
 
   // Đọc category từ URL khi trang load (để back button hoạt động đúng)
-  const catFromUrl = searchParams.get("cat") || "thoisu";
+  const catFromUrl = searchParams.get("cat") || "";
   const [activeNav, setActiveNav] = useState(catFromUrl);
 
   useEffect(() => {
@@ -30,15 +30,22 @@ export default function App() {
 
   // Load articles khi category URL thay đổi
   useEffect(() => {
-    const cat = searchParams.get("cat") || "thoisu";
+    const cat = searchParams.get("cat") || "";
     setActiveNav(cat);
     setLoading(true);
 
     if (viewMode === 'home') {
-      api.getArticlesByCategory(cat)
-        .then((data) => { if (Array.isArray(data)) setArticles(data); })
-        .catch(() => { })
-        .finally(() => setLoading(false));
+      if (cat) {
+        api.getArticlesByCategory(cat, 20)
+          .then((data) => { if (Array.isArray(data)) setArticles(data); })
+          .catch(() => { })
+          .finally(() => setLoading(false));
+      } else {
+        api.getArticles(20)
+          .then((data) => { if (Array.isArray(data)) setArticles(data); })
+          .catch(() => { })
+          .finally(() => setLoading(false));
+      }
     } else {
       api.getVNExpressNews()
         .then((data) => {
@@ -91,7 +98,11 @@ export default function App() {
 
   // Khi click nav → đổi URL param, lịch sử trình duyệt sẽ ghi nhận
   const handleNavClick = (id: string) => {
-    setSearchParams({ cat: id });
+    if (id) {
+      setSearchParams({ cat: id });
+    } else {
+      setSearchParams({});
+    }
   };
 
   const displayedArticles = articles || [];
@@ -126,6 +137,7 @@ export default function App() {
         viewMode={viewMode}
         currentUser={currentUser}
         handleDeleteArticle={handleDeleteArticle}
+        activeNav={activeNav}
       />
 
       <Footer />
