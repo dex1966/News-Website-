@@ -25,6 +25,9 @@ export const api = {
     getCategories: () =>
         fetch(`${BASE_URL}/categories.php`).then(r => r.json()),
 
+    getMarketData: () =>
+        fetch(`${BASE_URL}/market_data.php`).then(r => r.json()),
+
     login: (email: string, password: string) =>
         fetch(`${BASE_URL}/auth.php?action=login`, {
             method: 'POST',

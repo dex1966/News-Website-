@@ -51,13 +51,7 @@ export default function ArticlePage() {
             .finally(() => setLoading(false));
     }, [id]);
 
-    if (!currentUser && !loading) {
-        return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-                <LoginModal onClose={() => {}} hideClose={true} />
-            </div>
-        );
-    }
+
 
     if (loading) return (
         <div className="min-h-screen flex items-center justify-center">

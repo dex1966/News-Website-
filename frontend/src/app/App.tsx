@@ -72,13 +72,6 @@ export default function App() {
     setSearchParams(id ? { cat: id } : {});
   };
 
-  if (!loading && !currentUser) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <LoginModal onClose={() => {}} hideClose={true} />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen text-gray-900" style={{ background: "#ffffff", fontFamily: "Noto Sans, sans-serif" }}>
@@ -107,7 +100,7 @@ export default function App() {
 
       <Footer />
 
-      {loginOpen && currentUser && <LoginModal onClose={() => setLoginOpen(false)} />}
+      {loginOpen && <LoginModal onClose={() => setLoginOpen(false)} />}
     </div>
   );
 }
