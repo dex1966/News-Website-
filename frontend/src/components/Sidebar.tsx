@@ -14,7 +14,7 @@ export default function Sidebar({ mostRead }: { mostRead: any[] }) {
       </div>
       <div className="bg-white rounded border border-gray-200 mb-4 overflow-hidden">
         <div className="px-3 py-2" style={{ background: VN_RED }}>
-          <h3 className="text-white font-black text-xs uppercase tracking-wider">Đọc nhiều nhất</h3>
+          <h3 className="text-white font-black text-xs uppercase tracking-wider">Đọc mới nhất</h3>
         </div>
         <div
           style={{ maxHeight: 400, overflowY: "auto" }}
