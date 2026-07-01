@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { Youtube, Play, X, ExternalLink } from "lucide-react";
 
 const VN_RED = "#e2001a";
-const API_BASE = "http://localhost/news-backend/api";
+const API_BASE = "http://localhost:8888/news-backend/api";
 
 interface VideoItem {
     id: string;

@@ -4,7 +4,7 @@ import { ChevronLeft, Upload, X } from "lucide-react";
 import { api } from "../services/api";
 
 const VN_RED = "#e2001a";
-const API_BASE = "http://localhost/news-backend/api";
+const API_BASE = "http://localhost:8888/news-backend/api";
 
 interface Category {
     id: number;

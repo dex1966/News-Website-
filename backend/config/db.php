@@ -3,7 +3,7 @@ define('DB_HOST', '127.0.0.1');
 define('DB_PORT', '3307');
 define('DB_NAME', 'news_website');
 define('DB_USER', 'root');
-define('DB_PASS', '12345');
+define('DB_PASS', 'Admin123@');
 define('DB_CHARSET', 'utf8mb4');
 
 function getDB(): PDO {

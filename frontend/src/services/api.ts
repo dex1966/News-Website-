@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost/news-backend/api";
+const BASE_URL = "http://localhost:8888/news-backend/api";
 
 export const api = {
     getArticles: (limit = 20) =>

@@ -53,5 +53,5 @@ if (!move_uploaded_file($file['tmp_name'], $dest)) {
 }
 
 // Trả về URL để frontend dùng
-$url = "http://localhost/news-backend/uploads/" . $filename;
+$url = "http://localhost:8888/news-backend/uploads/" . $filename;
 echo json_encode(["url" => $url, "filename" => $filename]);
