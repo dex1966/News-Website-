@@ -16,14 +16,17 @@ export const api = {
     searchArticles: (q: string) =>
         fetch(`${BASE_URL}/articles.php?search=${encodeURIComponent(q)}`).then(r => r.json()),
 
-    getVNExpressArticles: (limit = 20) =>
-        fetch(`${BASE_URL}/external_articles.php?limit=${limit}`).then(r => r.json()),
-
-    getVNExpressNews: (limit = 20) =>
-        fetch(`${BASE_URL}/external_articles.php?limit=${limit}`).then(r => r.json()),
-
     getCategories: () =>
         fetch(`${BASE_URL}/categories.php`).then(r => r.json()),
+
+    getMarketData: () =>
+        fetch(`${BASE_URL}/market_data.php`).then(r => r.json()),
+
+    getDashboard: (userId: number) =>
+        fetch(`${BASE_URL}/dashboard.php?user_id=${userId}`).then(r => r.json()),
+
+    getUsers: (userId: number) =>
+        fetch(`${BASE_URL}/users.php?user_id=${userId}`).then(r => r.json()),
 
     login: (email: string, password: string) =>
         fetch(`${BASE_URL}/auth.php?action=login`, {
@@ -46,8 +49,26 @@ export const api = {
             body: JSON.stringify({ id, name, password, phone, address, hometown, gender }),
         }).then(r => r.json()),
 
-    deleteArticle: async (id: number) => {
-        const response = await fetch(`${BASE_URL}/articles.php?id=${id}`, {
+    updateUserRole: (id: number, role: "admin" | "user", userId: number) =>
+        fetch(`${BASE_URL}/users.php?id=${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ role, user_id: userId }),
+        }).then(r => r.json()),
+
+    deleteUser: async (id: number, userId: number) => {
+        const response = await fetch(`${BASE_URL}/users.php?id=${id}&user_id=${userId}`, {
+            method: 'DELETE',
+        });
+        try {
+            return await response.json();
+        } catch {
+            return response.ok ? { success: true } : { error: 'Xóa người dùng thất bại' };
+        }
+    },
+
+    deleteArticle: async (id: number, userId?: number) => {
+        const response = await fetch(`${BASE_URL}/articles.php?id=${id}&user_id=${userId ?? ''}`, {
             method: 'DELETE',
         });
         try {

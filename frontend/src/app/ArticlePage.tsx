@@ -28,7 +28,7 @@ export default function ArticlePage() {
         if (!id) return;
         if (!window.confirm("Bạn có chắc chắn muốn xoá bài viết này không?")) return;
         try {
-            const res = await api.deleteArticle(Number(id));
+            const res = await api.deleteArticle(Number(id), currentUser?.id);
             if (res.error) {
                 alert("Lỗi: " + res.error);
             } else {
@@ -51,13 +51,7 @@ export default function ArticlePage() {
             .finally(() => setLoading(false));
     }, [id]);
 
-    if (!currentUser && !loading) {
-        return (
-            <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-                <LoginModal onClose={() => {}} hideClose={true} />
-            </div>
-        );
-    }
+
 
     if (loading) return (
         <div className="min-h-screen flex items-center justify-center">
@@ -74,7 +68,7 @@ export default function ArticlePage() {
             <div className="text-center">
                 <p className="text-xl font-bold text-gray-700 mb-4">Không tìm thấy bài viết</p>
                 <button onClick={() => navigate("/")}
-                    className="px-4 py-2 text-white rounded text-sm" style={{ background: VN_RED }}>
+                    className="px-4 py-2 text-white rounded text-sm cursor-pointer" style={{ background: VN_RED }}>
                     Về trang chủ
                 </button>
             </div>
@@ -87,7 +81,7 @@ export default function ArticlePage() {
             <div className="border-b border-gray-200 sticky top-0 bg-white z-50">
                 <div className="max-w-[900px] mx-auto px-4 py-3 flex items-center gap-4">
                     <button onClick={() => navigate(-1)}
-                        className="flex items-center gap-1 text-sm font-semibold hover:text-[#e2001a] transition-colors">
+                        className="flex items-center gap-1 text-sm font-semibold hover:text-[#e2001a] transition-colors cursor-pointer">
                         <ArrowLeft size={16} /> Quay lại
                     </button>
                     <div className="flex items-start gap-1 ml-auto">
@@ -118,7 +112,7 @@ export default function ArticlePage() {
                 )}
 
                 <div className="flex flex-wrap items-center gap-4 mt-4 text-sm text-gray-400 border-b border-gray-200 pb-4">
-                    <span className="flex items-center gap-1"><User size={13} /> {article.author ?? "Admin"}</span>
+                    <span className="flex items-center gap-1"><User size={13} /> {article.author_name || article.author || "Admin"}</span>
                     <span className="flex items-center gap-1">
                         <Clock size={13} />
                         {new Date(article.created_at).toLocaleDateString("vi-VN", {
@@ -161,7 +155,7 @@ export default function ArticlePage() {
 
                 <div className="mt-10 pt-6 border-t border-gray-200">
                     <button onClick={() => navigate(-1)}
-                        className="flex items-center gap-2 text-sm font-semibold hover:text-[#e2001a] transition-colors">
+                        className="flex items-center gap-2 text-sm font-semibold hover:text-[#e2001a] transition-colors cursor-pointer">
                         <ArrowLeft size={14} /> Quay lại
                     </button>
                 </div>

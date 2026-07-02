@@ -76,7 +76,7 @@ export default function ProfilePage() {
             {/* Header */}
             <div className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
                 <div className="max-w-[1200px] mx-auto px-4 py-3 flex items-center gap-4">
-                    <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-sm text-gray-500 hover:text-[#e2001a] transition-colors">
+                    <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-sm text-gray-500 hover:text-[#e2001a] transition-colors cursor-pointer">
                         <ChevronLeft size={16} /> Quay lại
                     </button>
                     <div className="flex items-start gap-1 mx-auto">
@@ -139,7 +139,7 @@ export default function ProfilePage() {
                                     <Users size={14} className="text-gray-400" /> Giới tính
                                 </label>
                                 <select value={gender} onChange={e => setGender(e.target.value)}
-                                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#e2001a] transition-colors bg-white">
+                                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#e2001a] transition-colors bg-white cursor-pointer">
                                     {GENDER_OPTIONS.map(opt => (
                                         <option key={opt.value} value={opt.value}>{opt.label}</option>
                                     ))}
@@ -208,7 +208,7 @@ export default function ProfilePage() {
                     {/* Submit */}
                     <div className="flex justify-end">
                         <button type="submit" disabled={loading}
-                            className="flex items-center gap-2 px-8 py-3 text-sm text-white font-bold rounded-lg transition-all shadow-sm disabled:opacity-50"
+                            className="flex items-center gap-2 px-8 py-3 text-sm text-white font-bold rounded-lg transition-all shadow-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                             style={{ background: loading ? "#ccc" : VN_RED }}>
                             <Save size={16} />
                             {loading ? "Đang lưu..." : "Lưu thay đổi"}

@@ -17,7 +17,7 @@ export default function ArticleCard({ article, horizontal = false, onClick, onDe
             {onDelete && (
               <button
                 onClick={(e) => { e.stopPropagation(); onDelete(e); }}
-                className="ml-auto text-red-500 hover:text-red-700 transition-colors z-10"
+                className="ml-auto text-red-500 hover:text-red-700 transition-colors z-10 cursor-pointer"
                 title="Xoá bài viết"
               >
                 <Trash2 size={12} />
@@ -44,7 +44,7 @@ export default function ArticleCard({ article, horizontal = false, onClick, onDe
         {onDelete && (
           <button
             onClick={(e) => { e.stopPropagation(); onDelete(e); }}
-            className="ml-auto text-red-500 hover:text-red-700 transition-colors z-10"
+            className="ml-auto text-red-500 hover:text-red-700 transition-colors z-10 cursor-pointer"
             title="Xoá bài viết"
           >
             <Trash2 size={12} />

@@ -90,6 +90,7 @@ export default function CreateArticlePage() {
                     summary,
                     content,
                     author,
+                    user_id: user.id,
                     category_id: categoryId || null,
                     image_url: imageUrl,
                 }),
@@ -119,7 +120,7 @@ export default function CreateArticlePage() {
                 <div className="max-w-[1200px] mx-auto px-3 py-3 flex items-center gap-4">
                     <button
                         onClick={() => navigate(-1)}
-                        className="flex items-center gap-1 text-sm text-gray-500 hover:text-[#e2001a] transition-colors"
+                        className="flex items-center gap-1 text-sm text-gray-500 hover:text-[#e2001a] transition-colors cursor-pointer"
                     >
                         <ChevronLeft size={16} /> Quay lại
                     </button>
@@ -193,7 +194,7 @@ export default function CreateArticlePage() {
                         <select
                             value={categoryId}
                             onChange={(e) => setCategoryId(Number(e.target.value))}
-                            className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[#e2001a] transition-colors bg-white"
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[#e2001a] transition-colors bg-white cursor-pointer"
                         >
                             <option value="">-- Chọn danh mục --</option>
                             {categories.map((cat) => (
@@ -219,7 +220,7 @@ export default function CreateArticlePage() {
                                 <img src={coverPreview} alt="Preview" className="w-full h-52 object-cover" />
                                 <button
                                     onClick={removeCover}
-                                    className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1 transition-colors"
+                                    className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1 transition-colors cursor-pointer"
                                 >
                                     <X size={14} />
                                 </button>
@@ -248,14 +249,14 @@ export default function CreateArticlePage() {
                     <div className="flex justify-end gap-3 pt-2 border-t border-gray-100">
                         <button
                             onClick={() => navigate(-1)}
-                            className="px-5 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                            className="px-5 py-2 text-sm text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
                         >
                             Hủy
                         </button>
                         <button
                             onClick={handleSubmit}
                             disabled={loading}
-                            className="px-6 py-2 text-sm text-white font-semibold rounded-lg transition-colors disabled:opacity-50"
+                            className="px-6 py-2 text-sm text-white font-semibold rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                             style={{ background: loading ? "#ccc" : VN_RED }}
                         >
                             {loading ? "Đang đăng..." : "Đăng bài"}

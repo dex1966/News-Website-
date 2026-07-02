@@ -9,7 +9,6 @@ import HomePage from "../pages/HomePage";
 export default function App() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [viewMode, setViewMode] = useState<"home" | "vnexpress">("home");
   const [articles, setArticles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
@@ -24,23 +23,14 @@ export default function App() {
     if (u) try { setCurrentUser(JSON.parse(u)); } catch { }
   }, []);
 
-  // Load articles khi URL params hoặc viewMode thay đổi
+  // Load articles khi URL params thay đổi
   useEffect(() => {
     const cat = searchParams.get("cat") || "";
     const q = searchParams.get("q") || "";
     setLoading(true);
 
     let fetcher: Promise<any>;
-    if (viewMode === "vnexpress") {
-      fetcher = api.getVNExpressNews().then(data => {
-        if (!Array.isArray(data)) return;
-        setArticles(data.map(item => ({
-          id: item.link, title: item.title, summary: item.description,
-          image_url: item.image, time: item.pubDate,
-          source_url: item.link, category_name: "VNExpress", author: "VNExpress",
-        })));
-      });
-    } else if (q) {
+    if (q) {
       fetcher = api.searchArticles(q).then(data => { if (Array.isArray(data)) setArticles(data); });
     } else if (cat) {
       fetcher = api.getArticlesByCategory(cat, 20).then(data => { if (Array.isArray(data)) setArticles(data); });
@@ -49,7 +39,7 @@ export default function App() {
     }
 
     fetcher.catch(() => {}).finally(() => setLoading(false));
-  }, [searchParams, viewMode]);
+  }, [searchParams]);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -59,7 +49,7 @@ export default function App() {
   const handleDeleteArticle = async (id: number, e: React.MouseEvent) => {
     e.stopPropagation();
     if (!window.confirm("Bạn có chắc chắn muốn xoá bài viết này không?")) return;
-    const res = await api.deleteArticle(id).catch(() => null);
+    const res = await api.deleteArticle(id, currentUser?.id).catch(() => null);
     if (res?.error) alert(res.error);
     else setArticles(prev => prev.filter(a => a.id !== id));
   };
@@ -72,13 +62,6 @@ export default function App() {
     setSearchParams(id ? { cat: id } : {});
   };
 
-  if (!loading && !currentUser) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <LoginModal onClose={() => {}} hideClose={true} />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen text-gray-900" style={{ background: "#ffffff", fontFamily: "Noto Sans, sans-serif" }}>
@@ -86,8 +69,6 @@ export default function App() {
         currentUser={currentUser}
         handleLogout={handleLogout}
         setLoginOpen={setLoginOpen}
-        viewMode={viewMode}
-        setViewMode={setViewMode}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         handleSearch={handleSearch}
@@ -98,7 +79,6 @@ export default function App() {
       <HomePage
         loading={loading}
         articles={articles}
-        viewMode={viewMode}
         currentUser={currentUser}
         handleDeleteArticle={handleDeleteArticle}
         activeNav={activeNav}
@@ -107,7 +87,7 @@ export default function App() {
 
       <Footer />
 
-      {loginOpen && currentUser && <LoginModal onClose={() => setLoginOpen(false)} />}
+      {loginOpen && <LoginModal onClose={() => setLoginOpen(false)} />}
     </div>
   );
 }

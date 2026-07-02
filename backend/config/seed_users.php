@@ -30,6 +30,36 @@ try {
             'email' => 'user@gmail.com',
             'password' => 'user123',
             'role' => 'user'
+        ],
+        [
+            'name' => 'ĐỖ HOÀNG HẢI',
+            'email' => 'dohoanghai@gmail.com',
+            'password' => 'user123@',
+            'role' => 'user'
+        ],
+        [
+            'name' => 'NGUYỄN NHẬT NAM',
+            'email' => 'nguyennhatnam@gmail.com',
+            'password' => 'user123@',
+            'role' => 'user'
+        ],
+        [
+            'name' => 'VŨ LÊ HOÀNG NHẤT',
+            'email' => 'vulehoangnhat@gmail.com',
+            'password' => 'user123@',
+            'role' => 'user'
+        ],
+        [
+            'name' => 'LÊ THỊ BÍCH TRÂM',
+            'email' => 'lethibichtram@gmail.com',
+            'password' => 'user123@',
+            'role' => 'user'
+        ],
+        [
+            'name' => 'PHAN THANH TÙNG',
+            'email' => 'phanthanhtung@gmail.com',
+            'password' => 'user123@',
+            'role' => 'user'
         ]
     ];
 
@@ -52,6 +82,24 @@ try {
             $u['role']
         ]);
         echo "Đã tạo tài khoản {$u['role']}: {$u['email']} | Mật khẩu: {$u['password']}\n";
+    }
+
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS admins (
+            id CHAR(10) PRIMARY KEY,
+            user_id INT NOT NULL UNIQUE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ");
+    echo "Đã tạo bảng admins (nếu chưa có).\n";
+
+    $adminUsers = $pdo->query("SELECT id FROM users WHERE role = 'admin' ORDER BY id ASC")->fetchAll();
+    $insertAdmin = $pdo->prepare("INSERT IGNORE INTO admins (id, user_id) VALUES (?, ?)");
+    foreach ($adminUsers as $adminUser) {
+        $adminId = 'ADM' . str_pad((string)$adminUser['id'], 7, '0', STR_PAD_LEFT);
+        $insertAdmin->execute([$adminId, $adminUser['id']]);
+        echo "Đã đảm bảo admin {$adminId} cho user_id {$adminUser['id']}.\n";
     }
 
     echo "Hoàn thành seeding dữ liệu tài khoản.\n";

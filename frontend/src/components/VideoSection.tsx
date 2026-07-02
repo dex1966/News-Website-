@@ -86,7 +86,7 @@ export default function VideoSection() {
                         href="https://www.youtube.com/@vtv24"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-xs text-gray-400 hover:text-[#e2001a] transition-colors"
+                        className="flex items-center gap-1 text-xs text-gray-400 hover:text-[#e2001a] transition-colors cursor-pointer"
                     >
                         Xem kênh <ExternalLink size={11} />
                     </a>
@@ -164,11 +164,11 @@ export default function VideoSection() {
             {/* Modal Video Player */}
             {activeVideo && (
                 <div
-                    className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4"
+                    className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4 cursor-pointer"
                     onClick={(e) => { if (e.target === e.currentTarget) setActiveVideo(null); }}
                     ref={modalRef}
                 >
-                    <div className="bg-black rounded-xl overflow-hidden w-full max-w-3xl shadow-2xl">
+                    <div className="bg-black rounded-xl overflow-hidden w-full max-w-3xl shadow-2xl cursor-default">
                         {/* Modal Header */}
                         <div className="flex items-start justify-between px-4 py-3 bg-gray-900">
                             <div className="flex-1 mr-4">
@@ -185,14 +185,14 @@ export default function VideoSection() {
                                     href={activeVideo.watch_url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-gray-400 hover:text-white transition-colors p-1"
+                                    className="text-gray-400 hover:text-white transition-colors p-1 cursor-pointer"
                                     title="Xem trên YouTube"
                                 >
                                     <ExternalLink size={16} />
                                 </a>
                                 <button
                                     onClick={() => setActiveVideo(null)}
-                                    className="text-gray-400 hover:text-white transition-colors p-1"
+                                    className="text-gray-400 hover:text-white transition-colors p-1 cursor-pointer"
                                 >
                                     <X size={18} />
                                 </button>

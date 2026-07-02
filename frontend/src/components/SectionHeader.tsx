@@ -12,7 +12,7 @@ export default function SectionHeader({ title, tabs, activeTab, onTab }: {
           <button
             key={t}
             onClick={() => onTab?.(t)}
-            className={`text-xs font-semibold pb-2 border-b-2 transition-colors ${activeTab === t ? "text-[#e2001a] border-[#e2001a]" : "text-gray-500 border-transparent hover:text-gray-800"
+            className={`text-xs font-semibold pb-2 border-b-2 transition-colors cursor-pointer ${activeTab === t ? "text-[#e2001a] border-[#e2001a]" : "text-gray-500 border-transparent hover:text-gray-800"
               }`}
             style={{ marginBottom: "-9px" }}
           >

@@ -67,7 +67,7 @@ export default function LoginModal({ onClose, hideClose = false }: Props) {
       <div className="bg-white rounded-xl shadow-lg w-full max-w-md mx-4 p-6 relative">
         {!hideClose && (
           <button
-            className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+            className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 cursor-pointer"
             onClick={onClose}
           >
             <X size={20} />
@@ -140,7 +140,7 @@ export default function LoginModal({ onClose, hideClose = false }: Props) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 bg-[#e2001a] text-white rounded-full hover:bg-[#c10016] disabled:bg-red-300 transition-colors font-semibold"
+            className="w-full py-2 bg-[#e2001a] text-white rounded-full hover:bg-[#c10016] disabled:bg-red-300 transition-colors font-semibold cursor-pointer disabled:cursor-not-allowed"
           >
             {loading ? "Đang xử lý..." : isLogin ? "Đăng nhập" : "Đăng ký"}
           </button>
@@ -156,7 +156,7 @@ export default function LoginModal({ onClose, hideClose = false }: Props) {
                   setIsLogin(false);
                   setError("");
                 }}
-                className="text-[#e2001a] hover:underline font-medium"
+                className="text-[#e2001a] hover:underline font-medium cursor-pointer"
               >
                 Đăng ký ngay
               </button>
@@ -170,7 +170,7 @@ export default function LoginModal({ onClose, hideClose = false }: Props) {
                   setIsLogin(true);
                   setError("");
                 }}
-                className="text-[#e2001a] hover:underline font-medium"
+                className="text-[#e2001a] hover:underline font-medium cursor-pointer"
               >
                 Đăng nhập
               </button>

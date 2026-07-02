@@ -14,7 +14,6 @@ const VN_RED = "#e2001a";
 type HomePageProps = {
   loading: boolean;
   articles: any[];
-  viewMode: string;
   currentUser: any;
   handleDeleteArticle: (id: number, e: React.MouseEvent) => void;
   activeNav: string;
@@ -62,7 +61,7 @@ const SectionTitle = ({ title }: { title: string }) => (
 );
 
 export default function HomePage({
-  loading, articles, viewMode, currentUser, handleDeleteArticle, activeNav, currentSearchQuery = "",
+  loading, articles, currentUser, handleDeleteArticle, activeNav, currentSearchQuery = "",
 }: HomePageProps) {
   const navigate = useNavigate();
 
@@ -228,10 +227,10 @@ export default function HomePage({
                     <p className="text-sm text-gray-600 mt-2 leading-relaxed line-clamp-3">{heroArticle.summary || heroArticle.desc}</p>
                     <div className="flex items-center gap-4 mt-2 text-xs text-gray-400">
                       <span className="flex items-center gap-1"><Clock size={11} /> {formatRelativeTime(heroArticle.created_at || heroArticle.time)}</span>
-                      <span className="italic">{heroArticle.author}</span>
+                      <span className="italic">{heroArticle.author_name || heroArticle.author}</span>
                       {isAdmin && (
                         <button onClick={e => handleDeleteArticle(heroArticle.id, e)}
-                          className="ml-auto flex items-center gap-1 text-red-500 hover:text-red-700 font-semibold transition-colors z-10" title="Xoá bài viết">
+                          className="ml-auto flex items-center gap-1 text-red-500 hover:text-red-700 font-semibold transition-colors z-10 cursor-pointer" title="Xoá bài viết">
                           <Trash2 size={13} /> Xoá bài
                         </button>
                       )}
@@ -289,10 +288,10 @@ export default function HomePage({
           <div className="bg-white rounded border border-gray-200 p-4 mb-6">
             <SectionHeader title="Thể thao" tabs={["Bóng đá", "World Cup", "Tennis"]} />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              {(viewMode === "home" ? sportsNews : articles).map(a => (
+              {sportsNews.map(a => (
                 <ArticleCard key={a.id} article={a}
-                  onClick={() => viewMode === "home" ? navigate(`/article/${a.id}`) : window.open(a.source_url, "_blank")}
-                  onDelete={isAdmin && viewMode === "home" ? e => handleDeleteArticle(a.id, e) : undefined} />
+                  onClick={() => navigate(`/article/${a.id}`)}
+                  onDelete={isAdmin ? e => handleDeleteArticle(a.id, e) : undefined} />
               ))}
             </div>
           </div>

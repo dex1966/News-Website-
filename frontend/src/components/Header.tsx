@@ -10,8 +10,6 @@ type HeaderProps = {
   currentUser: any;
   handleLogout: () => void;
   setLoginOpen: (val: boolean) => void;
-  viewMode: string;
-  setViewMode: (mode: string) => void;
   searchQuery: string;
   setSearchQuery: (val: string) => void;
   handleSearch: () => void;
@@ -21,7 +19,6 @@ type HeaderProps = {
 
 export default function Header({
   currentUser, handleLogout, setLoginOpen,
-  viewMode, setViewMode,
   searchQuery, setSearchQuery, handleSearch,
   activeNav, handleNavClick
 }: HeaderProps) {
@@ -38,16 +35,13 @@ export default function Header({
             <span className="font-semibold text-gray-600">Thứ Sáu, 27/6/2026</span>
             <div className="hidden md:flex items-center gap-3">
               {["Tin sáng", "Ý kiến", "Thư giãn", "Infographics", "Video"].map((l) => (
-                <a key={l} href="#" className="hover:text-[#e2001a] transition-colors">{l}</a>
+                <a key={l} href="#" className="hover:text-[#e2001a] transition-colors cursor-pointer">{l}</a>
               ))}
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <button className="hidden sm:flex items-center gap-1 hover:text-[#e2001a] transition-colors">
+            <button className="hidden sm:flex items-center gap-1 hover:text-[#e2001a] transition-colors cursor-pointer">
               <Bell size={12} /> Thông báo
-            </button>
-            <button onClick={() => setViewMode(viewMode === 'home' ? 'vnexpress' : 'home')} className="px-3 py-1 bg-[#e2001a] text-white rounded hover:bg-[#c10016] transition-colors">
-              {viewMode === 'home' ? 'Xem VNExpress' : 'Quay lại'}
             </button>
             {currentUser ? (
               <div className="flex items-center gap-3">
@@ -59,28 +53,36 @@ export default function Header({
                   </span>
                 </div>
                 {currentUser.role === "admin" && (
-                  <button
-                    onClick={() => navigate("/admin/create")}
-                    className="flex items-center gap-1 px-3 py-1 bg-[#e2001a] hover:bg-[#c10016] text-white text-xs font-semibold rounded-full transition-colors shadow-sm"
-                  >
-                    + Viết bài
-                  </button>
+                  <>
+                    <button
+                      onClick={() => navigate("/admin")}
+                      className="flex items-center gap-1 px-3 py-1 bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold rounded-full transition-colors shadow-sm cursor-pointer"
+                    >
+                      Dashboard
+                    </button>
+                    <button
+                      onClick={() => navigate("/admin/create")}
+                      className="flex items-center gap-1 px-3 py-1 bg-[#e2001a] hover:bg-[#c10016] text-white text-xs font-semibold rounded-full transition-colors shadow-sm cursor-pointer"
+                    >
+                      + Viết bài
+                    </button>
+                  </>
                 )}
                 <button
                   onClick={() => navigate("/profile")}
-                  className="text-gray-500 hover:text-[#e2001a] font-semibold transition-colors border-l pl-3 border-gray-200"
+                  className="text-gray-500 hover:text-[#e2001a] font-semibold transition-colors border-l pl-3 border-gray-200 cursor-pointer"
                 >
                   Thông tin cá nhân
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="text-gray-500 hover:text-[#e2001a] font-semibold transition-colors border-l pl-3 border-gray-200"
+                  className="text-gray-500 hover:text-[#e2001a] font-semibold transition-colors border-l pl-3 border-gray-200 cursor-pointer"
                 >
                   Đăng xuất
                 </button>
               </div>
             ) : (
-              <button className="flex items-center gap-1 hover:text-[#e2001a] transition-colors" onClick={() => setLoginOpen(true)}>
+              <button className="flex items-center gap-1 hover:text-[#e2001a] transition-colors cursor-pointer" onClick={() => setLoginOpen(true)}>
                 <User size={12} /> Đăng nhập
               </button>
             )}
@@ -107,8 +109,8 @@ export default function Header({
             <Search size={15} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer hover:text-[#e2001a]" onClick={handleSearch} />
           </div>
           <div className="flex items-center gap-2 sm:hidden">
-            <button onClick={() => setSearchOpen(!searchOpen)} className="p-1 text-gray-600"><Search size={20} /></button>
-            <button onClick={() => setMobileOpen(!mobileOpen)} className="p-1 text-gray-600"><Menu size={20} /></button>
+            <button onClick={() => setSearchOpen(!searchOpen)} className="p-1 text-gray-600 cursor-pointer"><Search size={20} /></button>
+            <button onClick={() => setMobileOpen(!mobileOpen)} className="p-1 text-gray-600 cursor-pointer"><Menu size={20} /></button>
           </div>
         </div>
         {searchOpen && (
@@ -127,12 +129,12 @@ export default function Header({
         <div className="max-w-[1200px] mx-auto px-3">
           <div className="hidden sm:flex items-center overflow-x-auto">
             <button onClick={() => handleNavClick("")}
-              className={`flex-shrink-0 px-3.5 py-2.5 text-[13px] font-semibold whitespace-nowrap transition-colors ${!activeNav ? "bg-white text-[#e2001a]" : "text-white hover:bg-red-700"}`}>
+              className={`flex-shrink-0 px-3.5 py-2.5 text-[13px] font-semibold whitespace-nowrap transition-colors cursor-pointer ${!activeNav ? "bg-white text-[#e2001a]" : "text-white hover:bg-red-700"}`}>
               Trang chủ
             </button>
             {NAV_CATS.map((cat) => (
               <button key={cat.id} onClick={() => handleNavClick(cat.id)}
-                className={`flex-shrink-0 px-3.5 py-2.5 text-[13px] font-semibold whitespace-nowrap transition-colors ${activeNav === cat.id ? "bg-white" : "text-white hover:bg-red-700"}`}
+                className={`flex-shrink-0 px-3.5 py-2.5 text-[13px] font-semibold whitespace-nowrap transition-colors cursor-pointer ${activeNav === cat.id ? "bg-white" : "text-white hover:bg-red-700"}`}
                 style={activeNav === cat.id ? { color: VN_RED } : {}}>
                 {cat.label}
               </button>
@@ -140,19 +142,19 @@ export default function Header({
           </div>
           <div className="sm:hidden flex items-center justify-between py-2.5">
             <span className="text-white font-semibold text-sm">{NAV_CATS.find((c) => c.id === activeNav)?.label || "Trang chủ"}</span>
-            <button onClick={() => setMobileOpen(!mobileOpen)} className="text-white flex items-center gap-1 text-xs">
+            <button onClick={() => setMobileOpen(!mobileOpen)} className="text-white flex items-center gap-1 text-xs cursor-pointer">
               Danh mục <ChevronDown size={14} />
             </button>
           </div>
           {mobileOpen && (
             <div className="sm:hidden grid grid-cols-3 gap-1 pb-3">
               <button onClick={() => { handleNavClick(""); setMobileOpen(false); }}
-                className={`px-2 py-1.5 text-xs font-medium rounded transition-colors text-center ${!activeNav ? "bg-white text-[#e2001a]" : "text-white hover:bg-red-700"}`}>
+                className={`px-2 py-1.5 text-xs font-medium rounded transition-colors text-center cursor-pointer ${!activeNav ? "bg-white text-[#e2001a]" : "text-white hover:bg-red-700"}`}>
                 Trang chủ
               </button>
               {NAV_CATS.map((cat) => (
                 <button key={cat.id} onClick={() => { handleNavClick(cat.id); setMobileOpen(false); }}
-                  className={`px-2 py-1.5 text-xs font-medium rounded transition-colors text-center ${activeNav === cat.id ? "bg-white" : "text-white hover:bg-red-700"}`}
+                  className={`px-2 py-1.5 text-xs font-medium rounded transition-colors text-center cursor-pointer ${activeNav === cat.id ? "bg-white" : "text-white hover:bg-red-700"}`}
                   style={activeNav === cat.id ? { color: VN_RED } : {}}>
                   {cat.label}
                 </button>
