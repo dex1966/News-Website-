@@ -5,7 +5,6 @@ import { api } from "../services/api";
 import LoginModal from "./LoginModal";
 
 const VN_RED = "#e2001a";
-const VN_NAVY = "#003380";
 
 export default function ArticlePage() {
     const { id } = useParams();
@@ -80,16 +79,24 @@ export default function ArticlePage() {
             {/* HEADER */}
             <div className="border-b border-gray-200 sticky top-0 bg-white z-50">
                 <div className="max-w-[900px] mx-auto px-4 py-3 flex items-center gap-4">
-                    <button onClick={() => navigate(-1)}
-                        className="flex items-center gap-1 text-sm font-semibold hover:text-[#e2001a] transition-colors cursor-pointer">
-                        <ArrowLeft size={16} /> Quay lại
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-[#e2001a] transition-colors cursor-pointer"
+                        aria-label="Quay lại"
+                    >
+                        <ArrowLeft size={22} />
                     </button>
-                    <div className="flex items-start gap-1 ml-auto">
-                        <span className="text-[22px] font-black text-[#e2001a] leading-none"
-                            style={{ fontFamily: "Merriweather, Georgia, serif" }}>VN</span>
-                        <span className="text-[14px] font-black tracking-[0.15em] mt-0.5"
-                            style={{ color: VN_NAVY, fontFamily: "Merriweather, Georgia, serif" }}>EXPRESS</span>
-                    </div>
+                    <button
+                        onClick={() => navigate("/")}
+                        className="ml-auto cursor-pointer"
+                        aria-label="Về trang chủ"
+                    >
+                        <img
+                            src="/7news-logo.png"
+                            alt="7NEWS"
+                            className="h-10 w-auto max-w-[120px] object-contain"
+                        />
+                    </button>
                 </div>
             </div>
 
@@ -153,12 +160,6 @@ export default function ArticlePage() {
                     }
                 </div>
 
-                <div className="mt-10 pt-6 border-t border-gray-200">
-                    <button onClick={() => navigate(-1)}
-                        className="flex items-center gap-2 text-sm font-semibold hover:text-[#e2001a] transition-colors cursor-pointer">
-                        <ArrowLeft size={14} /> Quay lại
-                    </button>
-                </div>
             </div>
         </div>
     );

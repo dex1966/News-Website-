@@ -53,11 +53,11 @@ export default function AdminLayout({ title, subtitle, children }: {
                             <Home size={17} />
                         </button>
                         <div>
-                            <div className="flex items-start gap-1">
-                                <span className="text-2xl font-black leading-none" style={{ color: VN_RED, fontFamily: "Merriweather, Georgia, serif" }}>VN</span>
-                                <span className="text-base font-black tracking-[0.15em] mt-0.5" style={{ color: "#003380", fontFamily: "Merriweather, Georgia, serif" }}>EXPRESS</span>
-                            </div>
-                            <p className="text-[11px] text-gray-400">Admin dashboard</p>
+                            <img
+                                src="/7news-logo.png"
+                                alt="7NEWS"
+                                className="h-12 w-auto max-w-[145px] object-contain"
+                            />
                         </div>
                     </div>
                     <div className="text-right">

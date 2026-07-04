@@ -117,19 +117,22 @@ export default function CreateArticlePage() {
         <div className="min-h-screen" style={{ background: "#f5f5f5", fontFamily: "Noto Sans, sans-serif" }}>
             {/* Header giống App.tsx */}
             <div className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-                <div className="max-w-[1200px] mx-auto px-3 py-3 flex items-center gap-4">
+                <div className="max-w-[860px] mx-auto px-3 py-3 flex items-center gap-4">
                     <button
                         onClick={() => navigate(-1)}
-                        className="flex items-center gap-1 text-sm text-gray-500 hover:text-[#e2001a] transition-colors cursor-pointer"
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-[#e2001a] transition-colors cursor-pointer"
+                        aria-label="Quay lại"
                     >
-                        <ChevronLeft size={16} /> Quay lại
+                        <ChevronLeft size={22} />
                     </button>
-                    <div className="flex items-start gap-1">
-                        <span className="text-2xl font-black leading-none" style={{ color: VN_RED, fontFamily: "Merriweather, Georgia, serif" }}>VN</span>
-                        <span className="text-base font-black tracking-[0.15em] mt-0.5" style={{ color: "#003380", fontFamily: "Merriweather, Georgia, serif" }}>EXPRESS</span>
-                    </div>
-                    <span className="text-gray-300">|</span>
-                    <span className="text-sm font-semibold text-gray-700">Tạo bài viết mới</span>
+                    <span className="min-w-0 flex-1 text-sm font-semibold text-gray-700">Tạo bài viết mới</span>
+                    <button onClick={() => navigate("/")} className="ml-auto shrink-0 cursor-pointer" aria-label="Về trang chủ">
+                        <img
+                            src="/7news-logo.png"
+                            alt="7NEWS"
+                            className="h-10 w-auto max-w-[120px] object-contain"
+                        />
+                    </button>
                 </div>
             </div>
 
