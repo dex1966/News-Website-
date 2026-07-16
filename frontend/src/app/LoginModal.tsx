@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X } from "lucide-react";
+import { Eye, EyeOff, X } from "lucide-react";
 import { api } from "../services/api";
 
 type Props = {
@@ -12,9 +12,21 @@ export default function LoginModal({ onClose, hideClose = false }: Props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const clearForm = () => {
+    setName("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setShowPassword(false);
+    setShowConfirmPassword(false);
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -43,6 +55,10 @@ export default function LoginModal({ onClose, hideClose = false }: Props) {
           setError("Vui lòng nhập họ và tên");
           return;
         }
+        if (password !== confirmPassword) {
+          setError("Mật khẩu xác nhận không khớp");
+          return;
+        }
         const data = await api.register(name, email, password);
         if (data.error) {
           setError(data.error);
@@ -50,6 +66,7 @@ export default function LoginModal({ onClose, hideClose = false }: Props) {
         }
         
         setSuccessMsg("Đăng ký thành công! Đang chuyển sang đăng nhập...");
+        clearForm();
         setTimeout(() => {
           setIsLogin(true);
           setSuccessMsg("");
@@ -90,7 +107,7 @@ export default function LoginModal({ onClose, hideClose = false }: Props) {
           </div>
         )}
 
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="space-y-4" onSubmit={handleSubmit} autoComplete={isLogin ? "on" : "off"}>
           {!isLogin && (
             <div>
               <label className="block text-sm font-medium mb-1" htmlFor="name">
@@ -104,6 +121,7 @@ export default function LoginModal({ onClose, hideClose = false }: Props) {
                 onChange={(e) => setName(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-[#e2001a] transition-colors"
                 placeholder="Nguyễn Văn A"
+                autoComplete="off"
               />
             </div>
           )}
@@ -119,6 +137,7 @@ export default function LoginModal({ onClose, hideClose = false }: Props) {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-[#e2001a] transition-colors"
               placeholder="example@domain.com"
+              autoComplete={isLogin ? "email" : "off"}
             />
           </div>
 
@@ -126,16 +145,55 @@ export default function LoginModal({ onClose, hideClose = false }: Props) {
             <label className="block text-sm font-medium mb-1" htmlFor="password">
               Mật khẩu
             </label>
-            <input
-              id="password"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-[#e2001a] transition-colors"
-              placeholder="••••••"
-            />
+            <div className="relative">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-3 py-2 pr-11 border border-gray-300 rounded-full focus:outline-none focus:border-[#e2001a] transition-colors"
+                placeholder="••••••"
+                autoComplete={isLogin ? "current-password" : "new-password"}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
+
+          {!isLogin && (
+            <div>
+              <label className="block text-sm font-medium mb-1" htmlFor="confirmPassword">
+                Xác nhận mật khẩu
+              </label>
+              <div className="relative">
+                <input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full px-3 py-2 pr-11 border border-gray-300 rounded-full focus:outline-none focus:border-[#e2001a] transition-colors"
+                  placeholder="••••••"
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  aria-label={showConfirmPassword ? "Ẩn mật khẩu xác nhận" : "Hiện mật khẩu xác nhận"}
+                >
+                  {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+          )}
 
           <button
             type="submit"
@@ -155,6 +213,8 @@ export default function LoginModal({ onClose, hideClose = false }: Props) {
                 onClick={() => {
                   setIsLogin(false);
                   setError("");
+                  setSuccessMsg("");
+                  clearForm();
                 }}
                 className="text-[#e2001a] hover:underline font-medium cursor-pointer"
               >
@@ -169,6 +229,8 @@ export default function LoginModal({ onClose, hideClose = false }: Props) {
                 onClick={() => {
                   setIsLogin(true);
                   setError("");
+                  setSuccessMsg("");
+                  clearForm();
                 }}
                 className="text-[#e2001a] hover:underline font-medium cursor-pointer"
               >

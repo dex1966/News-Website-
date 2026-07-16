@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useState } from "react";
-import { BarChart3, FileText, Home, Users } from "lucide-react";
+import { BarChart3, FileText, FolderOpen, Home, Users } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const VN_RED = "#e2001a";
@@ -35,6 +35,7 @@ export default function AdminLayout({ title, subtitle, children }: {
     const navItems = [
         { label: "Tổng quan", path: "/admin", icon: BarChart3 },
         { label: "Bài viết", path: "/admin/articles", icon: FileText },
+        { label: "Danh mục", path: "/admin/categories", icon: FolderOpen },
         { label: "Người dùng", path: "/admin/users", icon: Users },
     ];
 

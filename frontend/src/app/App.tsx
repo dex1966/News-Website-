@@ -5,6 +5,12 @@ import LoginModal from "./LoginModal";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import HomePage from "../pages/HomePage";
+import { NAV_CATS } from "../data/mockData";
+
+type NavCategory = {
+  id: string;
+  label: string;
+};
 
 export default function App() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -14,6 +20,7 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
   const [loginOpen, setLoginOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [navCategories, setNavCategories] = useState<NavCategory[]>(NAV_CATS);
 
   const activeNav = searchParams.get("cat") || "";
 
@@ -21,6 +28,18 @@ export default function App() {
   useEffect(() => {
     const u = localStorage.getItem("user");
     if (u) try { setCurrentUser(JSON.parse(u)); } catch { }
+  }, []);
+
+  useEffect(() => {
+    api.getCategories()
+      .then(data => {
+        if (!Array.isArray(data)) return;
+        const categories = data
+          .filter((cat: any) => cat.slug && cat.name)
+          .map((cat: any) => ({ id: cat.slug, label: cat.name }));
+        if (categories.length > 0) setNavCategories(categories);
+      })
+      .catch(() => {});
   }, []);
 
   // Load articles khi URL params thay đổi
@@ -74,6 +93,7 @@ export default function App() {
         handleSearch={handleSearch}
         activeNav={activeNav}
         handleNavClick={handleNavClick}
+        navCategories={navCategories}
       />
 
       <HomePage
@@ -83,6 +103,7 @@ export default function App() {
         handleDeleteArticle={handleDeleteArticle}
         activeNav={activeNav}
         currentSearchQuery={searchParams.get("q") || ""}
+        navCategories={navCategories}
       />
 
       <Footer />

@@ -13,6 +13,7 @@ export default function ArticlePage() {
     const [loading, setLoading] = useState(true);
     const [notFound, setNotFound] = useState(false);
     const [currentUser, setCurrentUser] = useState<any>(null);
+    const [relatedArticles, setRelatedArticles] = useState<any[]>([]);
 
     useEffect(() => {
         const u = localStorage.getItem("user");
@@ -22,6 +23,10 @@ export default function ArticlePage() {
             } catch (e) {}
         }
     }, []);
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }, [id]);
 
     const handleDelete = async () => {
         if (!id) return;
@@ -41,10 +46,25 @@ export default function ArticlePage() {
 
     useEffect(() => {
         if (!id) return;
+        setLoading(true);
+        setNotFound(false);
+        setRelatedArticles([]);
         api.getArticle(Number(id))
             .then((data) => {
                 if (data.error) setNotFound(true);
-                else setArticle(data);
+                else {
+                    setArticle(data);
+                    if (data.category_slug) {
+                        api.getArticlesByCategory(data.category_slug, 5)
+                            .then((items) => {
+                                const related = Array.isArray(items)
+                                    ? items.filter((item) => Number(item.id) !== Number(id)).slice(0, 4)
+                                    : [];
+                                setRelatedArticles(related);
+                            })
+                            .catch(() => setRelatedArticles([]));
+                    }
+                }
             })
             .catch(() => setNotFound(true))
             .finally(() => setLoading(false));
@@ -159,6 +179,46 @@ export default function ArticlePage() {
                         : <p className="text-gray-500 italic">Nội dung bài viết chưa được cập nhật.</p>
                     }
                 </div>
+
+                {relatedArticles.length > 0 && (
+                    <section className="mt-10 border-t border-gray-200 pt-6">
+                        <div className="flex items-center justify-between gap-3 mb-4">
+                            <h2 className="text-lg font-black text-gray-900">Bài viết liên quan</h2>
+                            <span className="h-0.5 flex-1 bg-gray-100" />
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {relatedArticles.map((item) => (
+                                <button
+                                    key={item.id}
+                                    onClick={() => navigate(`/article/${item.id}`)}
+                                    className="group text-left border border-gray-200 rounded-lg overflow-hidden bg-white hover:border-[#e2001a] transition-colors cursor-pointer"
+                                >
+                                    {item.image_url && (
+                                        <div className="aspect-[16/9] bg-gray-100 overflow-hidden">
+                                            <img
+                                                src={item.image_url}
+                                                alt={item.title}
+                                                className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
+                                            />
+                                        </div>
+                                    )}
+                                    <div className="p-3">
+                                        <p className="text-xs font-bold uppercase text-[#e2001a] mb-1">
+                                            {item.category_name || article.category_name || "Tin liên quan"}
+                                        </p>
+                                        <h3 className="text-sm font-black text-gray-900 line-clamp-2 group-hover:text-[#e2001a] transition-colors">
+                                            {item.title}
+                                        </h3>
+                                        <p className="text-xs text-gray-400 mt-2 flex items-center gap-1">
+                                            <Eye size={12} /> {item.views ?? 0} lượt xem
+                                        </p>
+                                    </div>
+                                </button>
+                            ))}
+                        </div>
+                    </section>
+                )}
 
             </div>
         </div>

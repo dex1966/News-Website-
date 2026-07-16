@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Search, Bell, User, Menu, ChevronDown, UserCircle, LogOut, MessageSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { NAV_CATS } from "../data/mockData";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,12 +31,13 @@ type HeaderProps = {
   handleSearch: () => void;
   activeNav: string;
   handleNavClick: (id: string) => void;
+  navCategories: { id: string; label: string }[];
 };
 
 export default function Header({
   currentUser, handleLogout, setLoginOpen,
   searchQuery, setSearchQuery, handleSearch,
-  activeNav, handleNavClick
+  activeNav, handleNavClick, navCategories
 }: HeaderProps) {
   const navigate = useNavigate();
   const [searchOpen, setSearchOpen] = useState(false);
@@ -175,7 +175,7 @@ export default function Header({
               className={`flex-shrink-0 px-3.5 py-2.5 text-[13px] font-semibold whitespace-nowrap transition-colors cursor-pointer ${!activeNav ? "bg-white text-[#e2001a]" : "text-white hover:bg-red-700"}`}>
               Trang chủ
             </button>
-            {NAV_CATS.map((cat) => (
+            {navCategories.map((cat) => (
               <button key={cat.id} onClick={() => handleNavClick(cat.id)}
                 className={`flex-shrink-0 px-3.5 py-2.5 text-[13px] font-semibold whitespace-nowrap transition-colors cursor-pointer ${activeNav === cat.id ? "bg-white" : "text-white hover:bg-red-700"}`}
                 style={activeNav === cat.id ? { color: VN_RED } : {}}>
@@ -184,7 +184,7 @@ export default function Header({
             ))}
           </div>
           <div className="sm:hidden flex items-center justify-between py-2.5">
-            <span className="text-white font-semibold text-sm">{NAV_CATS.find((c) => c.id === activeNav)?.label || "Trang chủ"}</span>
+            <span className="text-white font-semibold text-sm">{navCategories.find((c) => c.id === activeNav)?.label || "Trang chủ"}</span>
             <button onClick={() => setMobileOpen(!mobileOpen)} className="text-white flex items-center gap-1 text-xs cursor-pointer">
               Danh mục <ChevronDown size={14} />
             </button>
@@ -195,7 +195,7 @@ export default function Header({
                 className={`px-2 py-1.5 text-xs font-medium rounded transition-colors text-center cursor-pointer ${!activeNav ? "bg-white text-[#e2001a]" : "text-white hover:bg-red-700"}`}>
                 Trang chủ
               </button>
-              {NAV_CATS.map((cat) => (
+              {navCategories.map((cat) => (
                 <button key={cat.id} onClick={() => { handleNavClick(cat.id); setMobileOpen(false); }}
                   className={`px-2 py-1.5 text-xs font-medium rounded transition-colors text-center cursor-pointer ${activeNav === cat.id ? "bg-white" : "text-white hover:bg-red-700"}`}
                   style={activeNav === cat.id ? { color: VN_RED } : {}}>

@@ -19,11 +19,53 @@ export const api = {
     getCategories: () =>
         fetch(`${BASE_URL}/categories.php`).then(r => r.json()),
 
+    createCategory: (data: { name: string; slug: string; user_id: number }) =>
+        fetch(`${BASE_URL}/categories.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        }).then(r => r.json()),
+
+    updateCategory: (id: number, data: { name: string; slug: string; user_id: number }) =>
+        fetch(`${BASE_URL}/categories.php?id=${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        }).then(r => r.json()),
+
+    deleteCategory: async (id: number, userId: number) => {
+        const response = await fetch(`${BASE_URL}/categories.php?id=${id}&user_id=${userId}`, {
+            method: 'DELETE',
+        });
+        try {
+            return await response.json();
+        } catch {
+            return response.ok ? { success: true } : { error: 'Xóa danh mục thất bại' };
+        }
+    },
+
     getMarketData: () =>
         fetch(`${BASE_URL}/market_data.php`).then(r => r.json()),
 
-    getDashboard: (userId: number) =>
-        fetch(`${BASE_URL}/dashboard.php?user_id=${userId}`).then(r => r.json()),
+    getDashboard: (userId: number, dateFrom?: string, dateTo?: string) => {
+        const params = new URLSearchParams({ user_id: String(userId) });
+        if (dateFrom) params.set("date_from", dateFrom);
+        if (dateTo) params.set("date_to", dateTo);
+        return fetch(`${BASE_URL}/dashboard.php?${params.toString()}`).then(r => r.json());
+    },
+
+    trackVisit: (data: {
+        page_path: string;
+        page_title?: string;
+        article_id?: number | null;
+        user_id?: number | null;
+        visitor_id?: string;
+    }) =>
+        fetch(`${BASE_URL}/visits.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        }).then(r => r.json()),
 
     getUsers: (userId: number) =>
         fetch(`${BASE_URL}/users.php?user_id=${userId}`).then(r => r.json()),

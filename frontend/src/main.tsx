@@ -9,16 +9,20 @@ import EditArticlePage from "./app/EditArticlePage";
 import ProfilePage from "./app/ProfilePage";
 import AdminDashboardPage from "./app/AdminDashboardPage";
 import AdminArticlesPage from "./app/AdminArticlesPage";
+import AdminCategoriesPage from "./app/AdminCategoriesPage";
 import AdminUsersPage from "./app/AdminUsersPage";
+import VisitTracker from "./app/VisitTracker";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
+      <VisitTracker />
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/article/:id" element={<ArticlePage />} />
         <Route path="/admin" element={<AdminDashboardPage />} />
         <Route path="/admin/articles" element={<AdminArticlesPage />} />
+        <Route path="/admin/categories" element={<AdminCategoriesPage />} />
         <Route path="/admin/users" element={<AdminUsersPage />} />
         <Route path="/admin/create" element={<CreateArticlePage />} />
         <Route path="/admin/edit/:id" element={<EditArticlePage />} />

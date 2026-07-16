@@ -62,6 +62,9 @@ try {
 
     if ($method === 'GET') {
         if ($id) {
+            $viewStmt = $pdo->prepare("UPDATE articles SET views = COALESCE(views, 0) + 1 WHERE id = ?");
+            $viewStmt->execute([$id]);
+
             $stmt = $pdo->prepare(articleSelectSql("WHERE a.id = ?"));
             $stmt->execute([$id]);
             $article = $stmt->fetch();

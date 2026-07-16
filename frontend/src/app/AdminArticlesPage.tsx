@@ -12,6 +12,10 @@ function getCurrentUser() {
     }
 }
 
+function getArticleCover(article: any) {
+    return article.image_url || article.img || article.thumbnail || "";
+}
+
 export default function AdminArticlesPage() {
     const navigate = useNavigate();
     const user = getCurrentUser();
@@ -96,9 +100,30 @@ export default function AdminArticlesPage() {
                             <tbody className="divide-y divide-gray-100">
                                 {filteredArticles.map(article => (
                                     <tr key={article.id} className="hover:bg-gray-50">
-                                        <td className="px-4 py-3 min-w-[260px]">
-                                            <button onClick={() => navigate(`/article/${article.id}`)} className="font-bold text-gray-800 text-left hover:text-[#e2001a] line-clamp-2 cursor-pointer">
-                                                {article.title}
+                                        <td className="px-4 py-3 min-w-[360px]">
+                                            <button
+                                                onClick={() => navigate(`/article/${article.id}`)}
+                                                className="group flex items-center gap-3 text-left cursor-pointer"
+                                            >
+                                                <div className="w-24 h-16 flex-shrink-0 overflow-hidden rounded border border-gray-200 bg-gray-100">
+                                                    {getArticleCover(article) ? (
+                                                        <img
+                                                            src={getArticleCover(article)}
+                                                            alt={article.title}
+                                                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                            onError={e => {
+                                                                e.currentTarget.style.display = "none";
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-[10px] font-bold uppercase text-gray-400">
+                                                            No image
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <span className="font-bold text-gray-800 group-hover:text-[#e2001a] line-clamp-2">
+                                                    {article.title}
+                                                </span>
                                             </button>
                                         </td>
                                         <td className="px-4 py-3 text-gray-500">{article.category_name || "Chưa phân loại"}</td>

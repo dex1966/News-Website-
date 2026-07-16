@@ -7,7 +7,6 @@ import Sidebar from "../components/Sidebar";
 import { api } from "../services/api";
 import VideoSection from "../components/VideoSection";
 import { formatRelativeTime } from "../utils/date";
-import { NAV_CATS } from "../data/mockData";
 
 const VN_RED = "#e2001a";
 
@@ -18,6 +17,7 @@ type HomePageProps = {
   handleDeleteArticle: (id: number, e: React.MouseEvent) => void;
   activeNav: string;
   currentSearchQuery?: string;
+  navCategories: { id: string; label: string }[];
 };
 
 /** Spinner dùng chung */
@@ -61,7 +61,7 @@ const SectionTitle = ({ title }: { title: string }) => (
 );
 
 export default function HomePage({
-  loading, articles, currentUser, handleDeleteArticle, activeNav, currentSearchQuery = "",
+  loading, articles, currentUser, handleDeleteArticle, activeNav, currentSearchQuery = "", navCategories,
 }: HomePageProps) {
   const navigate = useNavigate();
 
@@ -156,7 +156,7 @@ export default function HomePage({
 
   // ── Category Page ──
   if (activeNav) {
-    const categoryName = NAV_CATS.find(c => c.id === activeNav)?.label || activeNav;
+    const categoryName = navCategories.find(c => c.id === activeNav)?.label || activeNav;
     return (
       <PageLayout sidebar={sidebar}>
         <SectionTitle title={categoryName} />
